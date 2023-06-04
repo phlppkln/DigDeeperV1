@@ -16,8 +16,8 @@ interface ScatterDataPointInterface {
   }
   
   interface HeatmapInterface {
-    xPos: string;
-    yPos: string;
+    x: string;
+    y: string;
     value: number;
   }
   
@@ -27,7 +27,7 @@ interface ScatterDataPointInterface {
   }
 
   interface HeatmapVisItem {
-    xPos: number;
-    yPos: number;
+    x: number;
+    y: number;
     item: Answer
   }

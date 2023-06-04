@@ -30,13 +30,18 @@ export function calculateScale(start: number, end: number, scaleSteps: number): 
     
 export function getItemsAssignedToScale(items: Answer[], scaleX: number[], scaleY: number[]): HeatmapVisItem[] {
     return items.map((item) => {
-      const xPos = Math.floor((item.x - scaleX[0]) / (scaleX[1] - scaleX[0]));
-      const yPos = Math.floor((item.y - scaleY[0]) / (scaleY[1] - scaleY[0]));
-      return { xPos, yPos, item };
+      let x = Math.floor((item.x - scaleX[0]) / (scaleX[1] - scaleX[0]));
+      let y = Math.floor((item.y - scaleY[0]) / (scaleY[1] - scaleY[0]));
+      //set min and max
+      if(x < 0) x = 0;
+      if(x > scaleX.length-1) x = scaleX.length-1;
+      if(y < 0) y = 0;
+      if(y > scaleY.length-1) y = scaleY.length-1;
+      return { x, y, item };
     });
   }
     
-    export function countItemsInSteps(items: Answer[], scaleX: number[], scaleY: number[]): HeatmapInterface[] {
+  /*   export function countItemsInSteps(items: Answer[], scaleX: number[], scaleY: number[], xStartLabel:string, xEndLabel: string, yStartLabel:string, yEndLabel: string): HeatmapInterface[] {
       //console.log('items', items)
         const counts: { [xPos: string]: { [yPos: string]: number } } = {};
     
@@ -57,34 +62,70 @@ export function getItemsAssignedToScale(items: Answer[], scaleX: number[], scale
     
     
       const heatmapData: HeatmapInterface[] = [];
-      Object.entries(sortedData).forEach(([xPos, yCounts]) => {
-        Object.entries(yCounts).forEach(([yPos, count]) => {
-          heatmapData.push({ xPos, yPos, value: count });
+      Object.entries(sortedData).forEach(([x, yCounts]) => {
+        Object.entries(yCounts).forEach(([y, count]) => {
+          const heatmapItem: HeatmapInterface = {
+            x,
+            y,
+            xStartLabel,
+            xEndLabel,
+            yStartLabel,
+            yEndLabel,
+            value: count
+          };
+          heatmapData.push(heatmapItem);
         });
       });
     
       return heatmapData;
     }
+ */
 
-
-export function createHeatmap(data: HeatmapVisItem[]): HeatmapInterface[] {
+export function createHeatmap(data: HeatmapVisItem[], steps: number, xStartLabel:string, xEndLabel:string, yStartLabel:string, yEndLabel:string): HeatmapInterface[] {
     
 const heatmap: HeatmapInterface[] = [];
 
-for (let x = 0; x < 10; x++) {
-  for (let y = 0; y < 10; y++) {
+for (let x = 0; x < steps; x++) {
+  for (let y = 0; y < steps; y++) {
     const heatmapItem: HeatmapInterface = {
-      xPos: x+"",
-      yPos: y+"",
+      x: x+"",
+      y: y+"",
       value: 0
     };
+/*     if(x === 0){
+      heatmapItem.x = xStartLabel;
+    }
+    if(x === steps-1){
+      heatmapItem.x = xEndLabel;
+    }
+    if(y===0){
+      heatmapItem.y = yStartLabel;
+    }
+    if(y===steps-1){
+      heatmapItem.y = yEndLabel;
+    } */
     heatmap.push(heatmapItem);
   }
 }
 
 data.forEach((answer) => {
-    const { xPos, yPos } = answer;
-    const heatmapItem = heatmap.find((heatmap) => heatmap.xPos === xPos+"" && heatmap.yPos === yPos+"");
+    const { x, y } = answer;
+    //convert x and y to string
+    let yStr = y+"";
+    let xStr = x+"";
+/*     if(x ===0){
+      xStr = xStartLabel;
+    }
+    if(x === steps-1){
+      xStr = xEndLabel;
+    }
+    if(y===0){
+      yStr = yStartLabel;
+    }
+    if(y===steps-1){
+      yStr = yEndLabel;
+    } */
+    const heatmapItem = heatmap.find((heatmap) => heatmap.x === xStr && heatmap.y === yStr);
     if (heatmapItem) {
       heatmapItem.value++;
     }
@@ -94,16 +135,32 @@ data.forEach((answer) => {
   return heatmap;
 }
 
-export function addToHeatmap(data: HeatmapVisItem[], heatmap:HeatmapInterface[]): HeatmapInterface[] {
+export function addToHeatmap(data: HeatmapVisItem[], heatmap:HeatmapInterface[], steps:number, xStartLabel:string, xEndLabel:string, yStartLabel:string, yEndLabel:string): HeatmapInterface[] {
     
     const updatedHeatmap: HeatmapInterface[] = [];
     
     data.forEach((item) => {
-        const { xPos, yPos } = item;
-        const existingItem = heatmap.find((existingHeatmap) => existingHeatmap.xPos === xPos+"" && existingHeatmap.yPos === yPos+"");
+        const { x, y } = item;
+            //convert x and y to string
+    let yStr = y+"";
+    let xStr = x+"";
+/*     if(x ===0){
+      xStr = xStartLabel;
+    }
+    if(x === heatmap.length-1){
+      xStr = xEndLabel;
+    }
+    if(y===0){
+      yStr = yStartLabel;
+    }
+    if(y===heatmap.length-1){
+      yStr = yEndLabel;
+    } */
+        const existingItem = heatmap.find((existingHeatmap) => existingHeatmap.x === xStr && existingHeatmap.y === yStr);
         if (existingItem) {
           existingItem.value++;
         } else {
+          console.log('item', item)
           throw new Error('HeatmapItem not found');
         }
       });

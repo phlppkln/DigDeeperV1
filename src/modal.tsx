@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import ScatterPlot from "./components/modal/visualizations/scatterPlot";
-import Heatmap from "./components/modal/visualizations/heatmap";
+import { Heatmap } from "./components/modal/visualizations/heatmap";
 //import BarChart  from "./components/modal/visualizations/barchart";
 import * as interviewAnalysisHelper from "./helpers/interviewAnalysisHelper";
 
 const Modal = () => {
+  const [heatmapSteps, setHeatmapSteps] = useState<number>(2);
   const [data, setData] = useState<InterviewData[]>([]);
   const [heatmaps, setHeatmaps] = useState<Heatmaps[]>([]);
 
   useEffect(() => {
     getData();
-
     /*     const fetchData = async () => {
       await sleep(100);
       console.log("data", data)
@@ -23,6 +23,9 @@ const Modal = () => {
   }, []);
 
   const createHeatmap = async () => {
+    const emptyHeatmap: Heatmaps[] = [];
+    setHeatmaps(emptyHeatmap);
+
     await getData();
     await sleep(100);
     //console.log("data", data)
@@ -39,7 +42,9 @@ const Modal = () => {
   const getData = async () => {
     const appData = JSON.parse(await miro.board.getAppData("data"));
     setData(appData);
+    await sleep(1000);
   };
+
 
   const showErrorMessage = async () => {
     // Compose the message.
@@ -55,25 +60,16 @@ const Modal = () => {
       return;
     }
 
-    //find min and max values for x and y labels in data
-    let startX: number = -1;
-    let endX: number = -1;
-    let startY: number = -1;
-    let endY: number = -1;
-    data.forEach((interviewData) => {
-      interviewData.questions.forEach((questionData) => {
-        if (startX === -1 || questionData.xMinPosition < startX) {
-          startX = questionData.xMinPosition;
-        }
-        if (endX === -1 || questionData.xMaxPosition > endX) {
-          endX = questionData.xMaxPosition;
-        }
-        if (startY === -1 || questionData.yMinPosition < startY) {
-          startY = questionData.yMinPosition;
-        }
-        if (endY === -1 || questionData.yMaxPosition > endY) {
-          endY = questionData.yMaxPosition;
-        }
+    //console.log('data in buildHeatmapData', data)
+    data.forEach(async (interviewData) => {
+      interviewData.questions.forEach(async (questionData) => {
+        await sleep(100);
+            //find min and max values for x and y labels for question
+            //console.log("questionData", questionData);
+          let startX = questionData.xMinPosition;
+          let endX = questionData.xMaxPosition;
+          let startY = questionData.yMinPosition;
+          let endY = questionData.yMaxPosition;
         //swap if min is bigger than max
         if (startX > endX) {
           const tmp = startX;
@@ -85,76 +81,72 @@ const Modal = () => {
           startY = endY;
           endY = tmp;
         }
-      });
-    });
 
     //calculate scales
-    const scaleSteps = 10;
+/*     console.log("startX", startX);
+    console.log("endX", endX);
+    console.log("startY", startY);
+    console.log("endY", endY); */
     const scaleX = interviewAnalysisHelper.calculateScale(
       startX,
       endX,
-      scaleSteps
+      heatmapSteps
     );
     const scaleY = interviewAnalysisHelper.calculateScale(
       startY,
       endY,
-      scaleSteps
+      heatmapSteps
     );
 
     //console.log("scaleX", scaleX);
     //console.log("scaleY", scaleY);
-
-    //create HeatmapData answers to scales
-    data.forEach((interviewData) => {
-      interviewData.questions.forEach((question) => {
         //let answersAssignedToScale = interviewAnalysisHelper.assignAnswerToScale(question.answers, scaleX, scaleY);
 
         //check if heatmap for this question already exists
         let heatmap = heatmaps.find(
-          (heatmap) => heatmap.title === question.title
+          (heatmap) => heatmap.title === questionData.title
         );
         if (heatmap === undefined) {
           //create new heatmap
-          console.log(
+/*           console.log(
             "create new heatmap because new question detected for ",
-            question.title
-          );
+            questionData.title
+          ); */
           let newHeatmapData: HeatmapVisItem[] =
             interviewAnalysisHelper.getItemsAssignedToScale(
-              question.answers,
+              questionData.answers,
               scaleX,
               scaleY
             );
           let newHeatmap: HeatmapInterface[] =
-            interviewAnalysisHelper.createHeatmap(newHeatmapData);
+            interviewAnalysisHelper.createHeatmap(newHeatmapData, heatmapSteps, questionData.xLabelMin, questionData.xLabelMax, questionData.yLabelMin, questionData.yLabelMax);
           let heatmapsTmp = heatmaps;
-          heatmapsTmp.push({ data: newHeatmap, title: question.title });
+          heatmapsTmp.push({ data: newHeatmap, title: questionData.title });
           setHeatmaps(heatmapsTmp);
         } else {
           //add answers to existing heatmap if the datapoint exists for this heatmap
-          console.log(
+/*           console.log(
             "add answers to existing heatmap if possible to ",
             heatmap.title
-          );
+          ); */
           //add answers to existing heatmap
           let newHeatmapData: HeatmapVisItem[] =
             interviewAnalysisHelper.getItemsAssignedToScale(
-              question.answers,
+              questionData.answers,
               scaleX,
               scaleY
             );
-          interviewAnalysisHelper.addToHeatmap(newHeatmapData, heatmap.data);
+          interviewAnalysisHelper.addToHeatmap(newHeatmapData, heatmap.data, heatmapSteps, questionData.xLabelMin, questionData.xLabelMax, questionData.yLabelMin, questionData.yLabelMax);
         }
       });
     });
 
-    console.log(heatmaps);
+    console.log('heatmaps', heatmaps);
     await sleep(1000);
   };
 
-  const printData = () => {
-    console.log(data);
-    return JSON.stringify(data);
+  const printData = async () => {
+    console.log('printData Modal: ', data);
   };
 
   const getHeatmaps = () => {

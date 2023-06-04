@@ -1,8 +1,6 @@
 import { Connector, StickyNote } from "@mirohq/websdk-types";
 import { useEffect } from "react";
 
-
-
 const InterviewAnalysis = () => {
   useEffect(() => {}, []);
 
@@ -57,7 +55,7 @@ const InterviewAnalysis = () => {
           //todo: show error message
           return;
         }
-        
+
         const children = await frame.getChildren();
         children.forEach(async (child) => {
           if (child.type === "connector") {
@@ -97,8 +95,8 @@ const InterviewAnalysis = () => {
         }
       }
     });
-    console.log("dataTmp", dataTmp);
-    await sleep(100);
+    //console.log("dataTmp", dataTmp);
+    await sleep(1000);
     await saveAppData(dataTmp);
   };
 
@@ -154,8 +152,10 @@ const InterviewAnalysis = () => {
     return question;
   };
 
-  const saveAppData = async (dataTmp:InterviewData[]) => {
-    console.log("saveAppData", dataTmp);
+  const saveAppData = async (dataTmp: InterviewData[]) => {
+    await miro.board.setAppData("data", []);
+    console.log("saveAppData should be selection: ", dataTmp);
+    console.log('appData should be empty: ', await miro.board.getAppData());
     let dataStr = JSON.stringify(dataTmp);
     await miro.board.setAppData("data", dataStr);
     await analysisComplete();
@@ -166,14 +166,12 @@ const InterviewAnalysis = () => {
   };
 
   const analysisComplete = async () => {
+    // Compose the message.
+    const infoNotification = "Analysis of interviews successfully completed";
 
-// Compose the message.
-const infoNotification = 'Analysis of interviews successfully completed';
-
-// Display the notification on the board UI.
-await miro.board.notifications.showInfo(infoNotification);
+    // Display the notification on the board UI.
+    await miro.board.notifications.showInfo(infoNotification);
   };
-
 
   return (
     <div className="main">

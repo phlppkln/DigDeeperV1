@@ -1,12 +1,23 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import InterviewAnalysis from "./components/panel/interviewAnalysis";
 import * as index from "./index";
 import { saveAs } from "file-saver";
 
 const App: React.FC = () => {
-  useEffect(() => {}, []);
+  const [data, setData] = useState<InterviewData[]>([]);
+  useEffect(() => {
+  }, []);
 
+  const sleep = (ms: number) => {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  };
+
+
+  const getData = async () => {
+    //setData(appData);
+    await sleep(1000);
+  };
   const openModal = async () => {
     await index.openModal();
   };
@@ -16,9 +27,23 @@ const App: React.FC = () => {
 
     console.log(data)
     
-    //const jsonData = JSON.stringify(data);
-    //const blob = new Blob([jsonData], { type: "application/json" });
-    //saveAs(blob, 'dig-deeper_interview-data.json');
+    const jsonData = JSON.stringify(data);
+    const blob = new Blob([jsonData], { type: "application/json" });
+    saveAs(blob, 'dig-deeper_interview-data.json');
+  };
+
+  
+  const printData = async () => {
+    //await getData();
+    const appData = JSON.parse(await miro.board.getAppData("data"));
+    await sleep(1000);
+    console.log('print data state in app.tsx after AppData get: ', appData);
+    console.log('print AppData in app.tsx: ', await miro.board.getAppData());
+  };
+
+  const printSelection = async () => {
+    const selection = await miro.board.getSelection();
+    console.log('printSelection App: ', selection);
   };
 
   return (
@@ -34,6 +59,8 @@ const App: React.FC = () => {
           the "Dig Deeper" button.
           </p>
         </div>
+        {/* <button onClick={printSelection}>Print selection</button> */}
+        {/* <button onClick={printData}>Print data</button> */}
       <div className="cs1 ce12">
         <button className="button button-primary" onClick={openModal}>
           Dig Deeper
