@@ -12,15 +12,28 @@ const Modal = () => {
 
   useEffect(() => {
     getData();
-    /*     const fetchData = async () => {
-      await sleep(100);
-      console.log("data", data)
-
-    };
-    fetchData().catch(console.error);
-
-    buildHeatmapData(); */
   }, []);
+
+  const handleGranularityChange = (event: any) => {
+    if(event.target.value < 2){
+      showErrorMessageInvalidGranularity();
+      return;
+    } else if (event.target.value > 100){
+      showErrorMessageInvalidGranularity();
+      return;
+    }
+    setHeatmapSteps(event.target.value);
+  };
+
+  const showErrorMessageInvalidGranularity = async () => {
+    const errorMessage = {
+      action: "Invalid granularity.",
+      followUp: "Select a number between 2 and 100 and try again.",
+    };
+    const errorNotification = `${errorMessage.action} ${errorMessage.followUp}`;
+
+    await miro.board.notifications.showError(errorNotification);
+  };
 
   const createHeatmap = async () => {
     const emptyHeatmap: Heatmaps[] = [];
@@ -57,6 +70,9 @@ const Modal = () => {
   const buildHeatmapData = async () => {
     if (data.length === 0) {
       showErrorMessage();
+      return;
+    } else if (heatmapSteps < 2 || heatmapSteps > 100) {
+      showErrorMessageInvalidGranularity();
       return;
     }
 
@@ -165,7 +181,7 @@ const Modal = () => {
     <div className="main">
       {/* ___________ HEADER ______________*/}
       <div className="header">
-        <h1>Visualization</h1>
+        <h1>DigDeeper</h1>
       </div>
 
       {/* ___________ VISUALIZATIONS ______________*/}
@@ -180,6 +196,13 @@ const Modal = () => {
       {/*         <div className="barchart" style={{ marginLeft: "200px" }}>
           {barChart}
         </div> */}
+
+        <div className="modal-settings-container">
+        <div className="form-group">
+	<label htmlFor="axis-granularity">Axis Granularity</label>
+	<input className="input" type="number" placeholder="Granularity" id="axis-granularity" onChange={handleGranularityChange} value={heatmapSteps}/>
+</div>
+        </div>
 
       {/* ___________ BUTTONS ______________*/}
       <div className="buttons-container">

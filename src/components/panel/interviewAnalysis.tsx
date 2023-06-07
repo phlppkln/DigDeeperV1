@@ -1,7 +1,11 @@
 import { Connector, StickyNote } from "@mirohq/websdk-types";
 import { useEffect } from "react";
 
-const InterviewAnalysis = () => {
+interface InterviewAnalysisProps {
+  analysisComplete: () => void;
+};
+
+const InterviewAnalysis :React.FC<InterviewAnalysisProps> = ({analysisComplete}) => {
   useEffect(() => {}, []);
 
   const resetData = async () => {
@@ -20,11 +24,12 @@ const InterviewAnalysis = () => {
     const selection = await miro.board.getSelection();
 
     if (selection.length === 0) {
-      //todo: show error message
+      showErrorMessageNoSelection();
       return;
     }
 
     let dataTmp: InterviewData[] = [];
+    try{
     selection.forEach(async (frame) => {
       if (frame.type === "frame") {
         let frameTitle = frame.title;
@@ -52,7 +57,7 @@ const InterviewAnalysis = () => {
           interviewee = splitted[0];
           question.title = splitted[1];
         } else {
-          //todo: show error message
+          showErrorMessageWrongFormat();
           return;
         }
 
@@ -95,8 +100,19 @@ const InterviewAnalysis = () => {
         }
       }
     });
+      
+  }
+  catch(error){
+    console.log(error);
+    showErrorMessageWrongFormat();
+    return;
+  }
     //console.log("dataTmp", dataTmp);
     await sleep(1000);
+    if(dataTmp.length === 0){
+      showErrorMessageWrongFormat();
+      return;
+    }
     await saveAppData(dataTmp);
   };
 
@@ -158,37 +174,52 @@ const InterviewAnalysis = () => {
     console.log('appData should be empty: ', await miro.board.getAppData());
     let dataStr = JSON.stringify(dataTmp);
     await miro.board.setAppData("data", dataStr);
-    await analysisComplete();
+    await showAnalysisCompleteNotification();
+    analysisComplete();
   };
 
   const sleep = (ms: number) => {
     return new Promise((resolve) => setTimeout(resolve, ms));
   };
 
-  const analysisComplete = async () => {
-    // Compose the message.
-    const infoNotification = "Analysis of interviews successfully completed";
-
-    // Display the notification on the board UI.
+  const showAnalysisCompleteNotification = async () => {
+    const infoNotification = "Analysis of frames successfully completed";
     await miro.board.notifications.showInfo(infoNotification);
   };
 
+  const showErrorMessageWrongFormat = async () => {
+    const errorMessage = {
+      action: "Detected wrong format in selection.",
+      followUp: "Select frames in the correct format.",
+    };
+    const errorNotification = `${errorMessage.action} ${errorMessage.followUp}`;
+
+    await miro.board.notifications.showError(errorNotification);
+  };
+
+  const showErrorMessageNoSelection = async () => {
+    const errorMessage = {
+      action: "No items selected.",
+      followUp: "Select frames and try again.",
+    };
+    const errorNotification = `${errorMessage.action} ${errorMessage.followUp}`;
+
+    await miro.board.notifications.showError(errorNotification);
+  };
+
   return (
-    <div className="main">
-      <div className="grid wrapper">
-        <h2>1. Interview Analysis</h2>
-        <div className="cs1 ce12">
+    <div className="">
           <p>
-            To analyze the interviews, select the frames that contain the
-            interview data and click on the "Analyze Interviews" button.
-          </p>
-        </div>{" "}
+            First, select the frames that contain the setup plane as well as
+            participants notes.
+          </p>{" "}
+          <div className="center-content">
         <div className="cs1 ce12">
           <button className="button button-primary" onClick={analyzeSelection}>
-            Analyze Interviews
+            Analyze Frames
           </button>
-        </div>
-      </div>
+          </div>
+          </div>
     </div>
   );
 };

@@ -5,14 +5,49 @@ import * as index from "./index";
 import { saveAs } from "file-saver";
 
 const App: React.FC = () => {
-  const [data, setData] = useState<InterviewData[]>([]);
-  useEffect(() => {
-  }, []);
+  const [isAnalysisCompleted, setIsAnalysisCompleted] = useState(false);
+  const [customizeFrame, setCustomizeFrame] = useState(false);
+  const [personIdInput, setPersonIdInput] = useState("PersonId");
+  const [questionIdInput, setQuestionIdInput] = useState("QuestionId");
+  const [questionInput, setQuestionInput] = useState("What cuisines can you think of and how would you rate them?");
+  const [topInput, setTopInput] = useState("spicy");
+  const [bottomInput, setBottomInput] = useState("mild");
+  const [leftInput, setLeftInput] = useState("adventurous");
+  const [rightInput, setRightInput] = useState("traditional");
+
+  useEffect(() => {}, []);
+
+  const handlePersonIdInputChange = (event: any) => {
+    setPersonIdInput(event.target.value);
+  };
+
+  const handleQuestionIdInputChange = (event: any) => {
+    setQuestionIdInput(event.target.value);
+  };
+
+  const handleQuestionInputChange = (event: any) => {
+    setQuestionInput(event.target.value);
+  };
+
+  const handleTopInputChange = (event: any) => {
+    setTopInput(event.target.value);
+  };
+
+  const handleBottomInputChange = (event: any) => {
+    setBottomInput(event.target.value);
+  };
+
+  const handleLeftInputChange = (event: any) => {
+    setLeftInput(event.target.value);
+  };
+
+  const handleRightInputChange = (event: any) => {
+    setRightInput(event.target.value);
+  };
 
   const sleep = (ms: number) => {
     return new Promise((resolve) => setTimeout(resolve, ms));
   };
-
 
   const getData = async () => {
     //setData(appData);
@@ -25,57 +60,295 @@ const App: React.FC = () => {
   const exportData = async () => {
     const data = await miro.board.getAppData("data");
 
-    console.log(data)
-    
+    console.log(data);
+
     const jsonData = JSON.stringify(data);
     const blob = new Blob([jsonData], { type: "application/json" });
-    saveAs(blob, 'dig-deeper_interview-data.json');
+    saveAs(blob, "dig-deeper_interview-data.json");
   };
 
-  
   const printData = async () => {
     //await getData();
     const appData = JSON.parse(await miro.board.getAppData("data"));
     await sleep(1000);
-    console.log('print data state in app.tsx after AppData get: ', appData);
-    console.log('print AppData in app.tsx: ', await miro.board.getAppData());
+    console.log("print data state in app.tsx after AppData get: ", appData);
+    console.log("print AppData in app.tsx: ", await miro.board.getAppData());
   };
 
   const printSelection = async () => {
     const selection = await miro.board.getSelection();
-    console.log('printSelection App: ', selection);
+    console.log("printSelection App: ", selection);
+  };
+
+  const analysisCompleted = async () => {
+    setIsAnalysisCompleted(true);
+  };
+
+  const openDescriptionModal = async () => {
+    await index.openDescriptionModal();
+  };
+
+  const createSampleFrame = async () => {
+    const frameWidth = 890;
+    const frameHeight = 580;
+    const frameTitle = personIdInput + ": " + questionIdInput;
+    const frame = await miro.board.createFrame({
+      title: frameTitle,
+      style: {
+        fillColor: "#ffffff",
+      },
+      x: 0, // Default value: horizontal center of the board
+      y: 0, // Default value: vertical center of the board
+      height: frameHeight,
+      width: frameWidth,
+    });
+
+    const question = await miro.board.createText({
+      content: "<p>" + questionInput + "</p>",
+      x: -25,
+      y: -247,
+      width: 800,
+      style: {
+        fontSize: 24,
+      }
+    });
+
+    const top = await miro.board.createText({
+      content: "<p>" + topInput + "</p>",
+      x: 0,
+      y: -194,
+      width: 33,
+    });
+
+    const right = await miro.board.createText({
+      content: "<p>" + rightInput + "</p>",
+      x: 369,
+      y: 0,
+      width: 75,
+    });
+
+    const bottom = await miro.board.createText({
+      content: "<p>" + bottomInput + "</p>",
+      x: 0,
+      y: 254,
+      width: 27,
+    });
+
+    const left = await miro.board.createText({
+      content: "<p>" + leftInput + "</p>",
+      x: -346,
+      y: 0,
+      width: 78,
+    });
+
+    const connectorTopBottom = await miro.board.createConnector({
+      shape: "curved",
+      style: {
+        startStrokeCap: "rounded_stealth",
+        endStrokeCap: "rounded_stealth",
+      },
+      start: {
+        item: top.id,
+        snapTo: "bottom",
+      },
+      end: {
+        item: bottom.id,
+        snapTo: "top",
+      },
+    });
+
+    const connectorLeftRight = await miro.board.createConnector({
+      shape: "curved",
+      style: {
+        startStrokeCap: "rounded_stealth",
+        endStrokeCap: "rounded_stealth",
+      },
+      start: {
+        item: left.id,
+        snapTo: "right",
+      },
+      end: {
+        item: right.id,
+        snapTo: "left",
+      },
+    });
+
+    await frame.add(question);
+    await frame.add(top);
+    await frame.add(right);
+    await frame.add(bottom);
+    await frame.add(left);
+    await frame.add(connectorTopBottom);
+    await frame.add(connectorLeftRight);
+
+    await miro.board.viewport.zoomTo(frame);
+  };
+
+  const showCustomizeFrame = () => {
+    let view = <div></div>;
+    if (customizeFrame) {
+      view = (
+        <div className="">
+          <div className="form-group">
+            <label htmlFor="person-id">Person ID</label>
+            <input
+              className="input"
+              type="text"
+              placeholder="Person Id"
+              id="person-id"
+              onChange={handlePersonIdInputChange}
+              value={personIdInput}
+            />
+            <label htmlFor="question-id">Question ID</label>
+            <input
+              className="input"
+              type="text"
+              placeholder="Question Id"
+              id="question-id"
+              onChange={handleQuestionIdInputChange}
+              value={questionIdInput}
+            />
+            <label htmlFor="question">Question</label>
+            <input
+              className="input"
+              type="text"
+              placeholder="Question"
+              id="question"
+              onChange={handleQuestionInputChange}
+              value={questionInput}
+            />
+
+            {/* Inputs for top, right, bottom, left*/}
+            <label htmlFor="left">X-Axis Left</label>
+            <input
+              className="input"
+              type="text"
+              placeholder="Left"
+              id="left"
+              onChange={handleLeftInputChange}
+              value={leftInput}
+            />
+            <label htmlFor="right">X-Axis Right</label>
+            <input
+              className="input"
+              type="text"
+              placeholder="Right"
+              id="right"
+              onChange={handleRightInputChange}
+              value={rightInput}
+            />
+            <label htmlFor="top">Y-Axis Top</label>
+            <input
+              className="input"
+              type="text"
+              placeholder="Top"
+              id="top"
+              onChange={handleTopInputChange}
+              value={topInput}
+            />
+            <label htmlFor="bottom">Y-Axis Bottom</label>
+            <input
+              className="input"
+              type="text"
+              placeholder="Bottom"
+              id="bottom"
+              onChange={handleBottomInputChange}
+              value={bottomInput}
+            />
+            
+          </div>
+        </div>
+      );
+    } else {
+      view = <div></div>;
+    }
+    return view;
+  };
+
+  const toggleCustomizeFrame = async () => {
+    setCustomizeFrame(!customizeFrame);
   };
 
   return (
-    <div className="grid wrapper">
-      <div className="cs1 ce12">
-        <InterviewAnalysis />
-      </div>
-      <div className="cs1 ce12">
-        <h2>2. Dig Deeper</h2>
-        <div className="cs1 ce12">
+    <div className="grid wrapper panel-container">
+      {/* <button onClick={printSelection}>Print</button> */}
+      <div className="cs1 ce12 panel-container-content">
+        <div>
           <p>
-            After you analyzed the interviews, you can explore the interviews in Miro by clicking on
-          the "Dig Deeper" button.
+            DigDeeper lets you use the power of the infinite canvas to gather
+            peoples perspective by spatial articulation. Break free from
+            traditional methods and explore the potential of an infinite canvas.
+            With DigDeeper, participants can express their perspectives,
+            thoughts, and ideas using a two-axis plane, resulting in an
+            interactive and engaging activity. Visualize and analyze the spatial
+            properties of participants perspective to uncover key insights,
+            patterns, and trends.
           </p>
+          <div onClick={openDescriptionModal}>
+            {" "}
+            <div className="center-content">
+              <button
+                className="button button-secondary button-small"
+                type="button"
+              >
+                Open Description
+              </button>{" "}
+            </div>
+          </div>
+
+          <div className="phase-container">
+            <div>
+              <label className="checkbox">
+                <input
+                  type="checkbox"
+                  checked={customizeFrame}
+                  onClick={toggleCustomizeFrame}
+                />
+                <span>Customize Sample Frame</span>
+              </label>
+              {showCustomizeFrame()}
+            </div>
+
+            <button
+              className="button button-primary"
+              onClick={createSampleFrame}
+            >
+              Create Sample Frame
+            </button>
+          </div>
+          <div className="phase-container">
+            <InterviewAnalysis analysisComplete={analysisCompleted} />
+          </div>
         </div>
-        {/* <button onClick={printSelection}>Print selection</button> */}
-        {/* <button onClick={printData}>Print data</button> */}
-      <div className="cs1 ce12">
-        <button className="button button-primary" onClick={openModal}>
-          Dig Deeper
-        </button>
-      </div>
-        <p>
-          You can also export the data by clicking on the "Export"
-            button to explore the interviews in your favorite tool..
-        </p>
-      </div>
-        <div className="cs1 ce12">
-          <button className="button button-primary" onClick={exportData}>
-            Export Data
-          </button>
+        <div className="phase-container">
+          <div className="">
+            <p>
+              After you analyzed the frames, you can explore the perspectives directly in
+              Miro or export the analyzed data.
+            </p>
+          </div>
+          {/* <button onClick={printSelection}>Print selection</button> */}
+          {/* <button onClick={printData}>Print data</button> */}
+          <div className="">
+            <button
+              disabled={!isAnalysisCompleted}
+              className="button button-primary"
+              onClick={openModal}
+            >
+              Dig Deeper
+            </button>
+          </div>
+          <div className="cs1 ce12">
+            <button
+              disabled={!isAnalysisCompleted}
+              className="button button-primary"
+              onClick={exportData}
+            >
+              Export Data
+            </button>
+          </div>
         </div>
+      </div>
     </div>
   );
 };

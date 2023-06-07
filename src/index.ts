@@ -12,4 +12,12 @@ export async function openModal() {
   });
 }
 
+export async function openDescriptionModal() {
+  await miro.board.ui.openModal({
+    url: "modal-description.html",
+    fullscreen: true,
+  });
+}
+
+
 init();

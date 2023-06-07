@@ -70,8 +70,8 @@ export const Renderer = ({
         stroke={"white"}
         onMouseEnter={(e) => {
           setHoveredCell({
-            xLabel: "group " + d.x,
-            yLabel: "group " + d.y,
+            xLabel: "" + d.x,
+            yLabel: "" + d.y,
             xPos: x + xScale.bandwidth() + MARGIN.left,
             yPos: y + xScale.bandwidth() / 2 + MARGIN.top,
             value: Math.round(d.value * 100) / 100,
