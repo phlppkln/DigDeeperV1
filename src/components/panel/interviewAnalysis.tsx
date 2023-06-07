@@ -210,8 +210,7 @@ const InterviewAnalysis :React.FC<InterviewAnalysisProps> = ({analysisComplete})
   return (
     <div className="">
           <p>
-            First, select the frames that contain the setup plane as well as
-            participants notes.
+            First, select all frames that contain the two-axis plane and the notes with the participants responses.
           </p>{" "}
           <div className="center-content">
         <div className="cs1 ce12">
