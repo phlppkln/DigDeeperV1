@@ -15,10 +15,10 @@ const Modal = () => {
   }, []);
 
   const handleGranularityChange = (event: any) => {
-    if(event.target.value < 2){
+    if (event.target.value < 2) {
       showErrorMessageInvalidGranularity();
       return;
-    } else if (event.target.value > 100){
+    } else if (event.target.value > 50) {
       showErrorMessageInvalidGranularity();
       return;
     }
@@ -28,7 +28,7 @@ const Modal = () => {
   const showErrorMessageInvalidGranularity = async () => {
     const errorMessage = {
       action: "Invalid granularity.",
-      followUp: "Select a number between 2 and 100 and try again.",
+      followUp: "Select a number between 2 and 50 and try again.",
     };
     const errorNotification = `${errorMessage.action} ${errorMessage.followUp}`;
 
@@ -58,7 +58,6 @@ const Modal = () => {
     await sleep(1000);
   };
 
-
   const showErrorMessage = async () => {
     // Compose the message.
     const infoNotification = "No data found. Analyze the interview first.";
@@ -80,12 +79,12 @@ const Modal = () => {
     data.forEach(async (interviewData) => {
       interviewData.questions.forEach(async (questionData) => {
         await sleep(100);
-            //find min and max values for x and y labels for question
-            //console.log("questionData", questionData);
-          let startX = questionData.xMinPosition;
-          let endX = questionData.xMaxPosition;
-          let startY = questionData.yMinPosition;
-          let endY = questionData.yMaxPosition;
+        //find min and max values for x and y labels for question
+        //console.log("questionData", questionData);
+        let startX = questionData.xMinPosition;
+        let endX = questionData.xMaxPosition;
+        let startY = questionData.yMinPosition;
+        let endY = questionData.yMaxPosition;
         //swap if min is bigger than max
         if (startX > endX) {
           const tmp = startX;
@@ -98,24 +97,24 @@ const Modal = () => {
           endY = tmp;
         }
 
-    //calculate scales
-/*     console.log("startX", startX);
+        //calculate scales
+        /*     console.log("startX", startX);
     console.log("endX", endX);
     console.log("startY", startY);
     console.log("endY", endY); */
-    const scaleX = interviewAnalysisHelper.calculateScale(
-      startX,
-      endX,
-      heatmapSteps
-    );
-    const scaleY = interviewAnalysisHelper.calculateScale(
-      startY,
-      endY,
-      heatmapSteps
-    );
+        const scaleX = interviewAnalysisHelper.calculateScale(
+          startX,
+          endX,
+          heatmapSteps
+        );
+        const scaleY = interviewAnalysisHelper.calculateScale(
+          startY,
+          endY,
+          heatmapSteps
+        );
 
-    //console.log("scaleX", scaleX);
-    //console.log("scaleY", scaleY);
+        //console.log("scaleX", scaleX);
+        //console.log("scaleY", scaleY);
         //let answersAssignedToScale = interviewAnalysisHelper.assignAnswerToScale(question.answers, scaleX, scaleY);
 
         //check if heatmap for this question already exists
@@ -124,7 +123,7 @@ const Modal = () => {
         );
         if (heatmap === undefined) {
           //create new heatmap
-/*           console.log(
+          /*           console.log(
             "create new heatmap because new question detected for ",
             questionData.title
           ); */
@@ -134,14 +133,24 @@ const Modal = () => {
               scaleX,
               scaleY
             );
+          //invert heatmaps y axis
+          interviewAnalysisHelper.invertDataset(newHeatmapData);
+
           let newHeatmap: HeatmapInterface[] =
-            interviewAnalysisHelper.createHeatmap(newHeatmapData, heatmapSteps, questionData.xLabelMin, questionData.xLabelMax, questionData.yLabelMin, questionData.yLabelMax);
+            interviewAnalysisHelper.createHeatmap(
+              newHeatmapData,
+              heatmapSteps,
+              questionData.xLabelMin,
+              questionData.xLabelMax,
+              questionData.yLabelMin,
+              questionData.yLabelMax
+            );
           let heatmapsTmp = heatmaps;
           heatmapsTmp.push({ data: newHeatmap, title: questionData.title });
           setHeatmaps(heatmapsTmp);
         } else {
           //add answers to existing heatmap if the datapoint exists for this heatmap
-/*           console.log(
+          /*           console.log(
             "add answers to existing heatmap if possible to ",
             heatmap.title
           ); */
@@ -152,17 +161,27 @@ const Modal = () => {
               scaleX,
               scaleY
             );
-          interviewAnalysisHelper.addToHeatmap(newHeatmapData, heatmap.data, heatmapSteps, questionData.xLabelMin, questionData.xLabelMax, questionData.yLabelMin, questionData.yLabelMax);
+          //invert heatmaps y axis
+          interviewAnalysisHelper.invertDataset(newHeatmapData);
+          interviewAnalysisHelper.addToHeatmap(
+            newHeatmapData,
+            heatmap.data,
+            heatmapSteps,
+            questionData.xLabelMin,
+            questionData.xLabelMax,
+            questionData.yLabelMin,
+            questionData.yLabelMax
+          );
         }
       });
     });
 
-    console.log('heatmaps', heatmaps);
+    console.log("heatmaps", heatmaps);
     await sleep(1000);
   };
 
   const printData = async () => {
-    console.log('printData Modal: ', data);
+    console.log("printData Modal: ", data);
   };
 
   const getHeatmaps = () => {
@@ -170,7 +189,13 @@ const Modal = () => {
     let i = 0;
     heatmaps.forEach((heatmap) => {
       heatmapsComponents.push(
-        <Heatmap data={heatmap.data} width={500} height={500} key={i} title={heatmap.title}></Heatmap>
+        <Heatmap
+          data={heatmap.data}
+          width={500}
+          height={500}
+          key={i}
+          title={heatmap.title}
+        ></Heatmap>
       );
       i++;
     });
@@ -178,10 +203,47 @@ const Modal = () => {
   };
 
   return (
-    <div className="main">
+    <div className="">
       {/* ___________ HEADER ______________*/}
-      <div className="header">
-        <h1>DigDeeper</h1>
+      <h1>DigDeeper</h1>
+      <p>
+        With DigDeeper you can visualize and analyze spatial relationships of
+        notes along the two axis. This allows you to get a deeper understanding
+        of peoples perspective and to find the most important areas.
+      </p>
+      <p>
+        All you need to do is to select the axis granularity and click the
+        button. This will define the number of steps the x and y axis is divided
+        into.
+      </p>
+      {/*         <div className="barchart" style={{ marginLeft: "200px" }}>
+          {barChart}
+        </div> */}
+      <button className="button button-primary" onClick={printData}>
+        Print Data
+      </button>
+      <div className="modal-settings-container">
+        <div className="form-group">
+          <label htmlFor="axis-granularity">Axis Granularity</label>
+          <input
+            className="input"
+            type="number"
+            placeholder="Granularity"
+            id="axis-granularity"
+            onChange={handleGranularityChange}
+            value={heatmapSteps}
+          />
+        </div>
+
+        {/* ___________ BUTTONS ______________*/}
+        <div className="buttons-container">
+          <button
+            className="button button-primary button-right"
+            onClick={createHeatmap}
+          >
+            Create Heatmap
+          </button>
+        </div>
       </div>
 
       {/* ___________ VISUALIZATIONS ______________*/}
@@ -192,22 +254,6 @@ const Modal = () => {
         <div className="scatterplot" style={{ marginLeft: "200px" }}>
           {/* {scatterPlot} */}
         </div>
-      </div>
-      {/*         <div className="barchart" style={{ marginLeft: "200px" }}>
-          {barChart}
-        </div> */}
-
-        <div className="modal-settings-container">
-        <div className="form-group">
-	<label htmlFor="axis-granularity">Axis Granularity</label>
-	<input className="input" type="number" placeholder="Granularity" id="axis-granularity" onChange={handleGranularityChange} value={heatmapSteps}/>
-</div>
-        </div>
-
-      {/* ___________ BUTTONS ______________*/}
-      <div className="buttons-container">
-        <button onClick={createHeatmap}>Create Heatmap</button>
-        <button onClick={printData}>Print Data</button>
       </div>
     </div>
   );
