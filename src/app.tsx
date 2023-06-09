@@ -271,7 +271,7 @@ const App: React.FC = () => {
 
   return (
     <div className="grid wrapper panel-container">
-      <button onClick={printSelection}>Print</button> 
+      {/* <button onClick={printSelection}>Print</button>  */}
       <div className="cs1 ce12 panel-container-content">
         <div>
           <p>
