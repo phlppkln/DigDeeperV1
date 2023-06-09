@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { createRoot } from "react-dom/client";
+import template from "./src/assets/setup-frame.png";
 
 const DescriptionModal = () => {
   useEffect(() => {}, []);
@@ -73,7 +74,7 @@ const DescriptionModal = () => {
         <div className="center-content">
           <img
             className="image-description"
-            src={require("./src/assets/setup-frame.png")}
+            src={template}
           />
         </div>
         <p>
