@@ -73,7 +73,7 @@ const DescriptionModal = () => {
         <div className="center-content">
           <img
             className="image-description"
-            src="./src/assets/setup-frame.png"
+            src={require("./src/assets/setup-frame.png")}
           />
         </div>
         <p>
