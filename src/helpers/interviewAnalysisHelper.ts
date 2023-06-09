@@ -1,16 +1,17 @@
+import * as d3 from "d3";
+
 export function calculateScale(
   start: number,
   end: number,
   scaleSteps: number
 ): number[] {
-  const stepSize = (end - start) / scaleSteps;
+  const stepSize = (end - start) / (scaleSteps-1);
   const scale: number[] = [];
 
-  for (let i = 0; i < scaleSteps; i++) {
-    const value = start + i * stepSize;
-    scale.push(value);
-  }
-
+    for (let i = 0; i < scaleSteps; i++) {
+      const value = start + i * stepSize;
+      scale.push(value);
+    }
   return scale;
 }
 
@@ -31,62 +32,44 @@ function sortData(data: any): { [xPos: string]: { [yPos: string]: number } } {
   return sortedData;
 }
 
-export function getItemsAssignedToScale(
+export const assignItemsToScale = (
   items: Answer[],
   scaleX: number[],
   scaleY: number[]
-): HeatmapVisItem[] {
-  return items.map((item) => {
-    let x = Math.floor((item.x - scaleX[0]) / (scaleX[1] - scaleX[0]));
-    let y = Math.floor((item.y - scaleY[0]) / (scaleY[1] - scaleY[0]));
-    //set min and max
-    if (x < 0) x = 0;
-    if (x > scaleX.length - 1) x = scaleX.length - 1;
-    if (y < 0) y = 0;
-    if (y > scaleY.length - 1) y = scaleY.length - 1;
-    return { x, y, item };
-  });
-}
+): HeatmapVisItem[] => {
+  const scaleData: HeatmapVisItem[] = [];
 
-/*   export function countItemsInSteps(items: Answer[], scaleX: number[], scaleY: number[], xStartLabel:string, xEndLabel: string, yStartLabel:string, yEndLabel: string): HeatmapInterface[] {
-      //console.log('items', items)
-        const counts: { [xPos: string]: { [yPos: string]: number } } = {};
-    
-      items.forEach((item) => {
-        const xStep = Math.floor((item.x - scaleX[0]) / (scaleX[1] - scaleX[0]));
-        const yStep = Math.floor((item.y - scaleY[0]) / (scaleY[1] - scaleY[0]));
-    
-        const xPos = `Step ${xStep}`;
-        const yPos = `Step ${yStep}`;
-    
-        counts[xPos] = counts[xPos] || {};
-        counts[xPos][yPos] = (counts[xPos][yPos] || 0) + 1;
-        //console.log(counts)
-      });
-    
-      const sortedData = sortData(counts);
-      //console.log(sortedData)
-    
-    
-      const heatmapData: HeatmapInterface[] = [];
-      Object.entries(sortedData).forEach(([x, yCounts]) => {
-        Object.entries(yCounts).forEach(([y, count]) => {
-          const heatmapItem: HeatmapInterface = {
-            x,
-            y,
-            xStartLabel,
-            xEndLabel,
-            yStartLabel,
-            yEndLabel,
-            value: count
-          };
-          heatmapData.push(heatmapItem);
-        });
-      });
-    
-      return heatmapData;
+  // Assign items to scaleData
+  for (const item of items) {
+    const { x, y } = item;
+
+    // Find the nearest index in the scaleX and scaleY arrays#
+    let xClosestIndex = -1;
+    let xClosestDistance = -1;
+    for(let i = 0; i < scaleX.length; i++) {
+      const distance = Math.abs(x - scaleX[i]);
+      if (xClosestDistance === -1 || distance < xClosestDistance) {
+        xClosestDistance = distance;
+        xClosestIndex = i;
+      }
     }
- */
+    let yClosestIndex = -1;
+    let yClosestDistance = -1;
+    for(let i = 0; i < scaleY.length; i++) {
+      const distance = Math.abs(y - scaleY[i]);
+      if (yClosestDistance === -1 || distance < yClosestDistance) {
+        yClosestDistance = distance;
+        yClosestIndex = i;
+      }
+    }
+    // Check if the indices are within range
+    if (xClosestIndex >= 0 && xClosestIndex < scaleX.length && yClosestIndex >= 0 && yClosestIndex < scaleY.length) {
+      scaleData.push({ x: xClosestIndex, y: yClosestIndex, item });
+    }
+  }
+
+  return scaleData;
+};
 
 export function createHeatmap(
   data: HeatmapVisItem[],
@@ -97,6 +80,8 @@ export function createHeatmap(
   yEndLabel: string
 ): HeatmapInterface[] {
   const heatmap: HeatmapInterface[] = [];
+
+  console.log("data", data)
 
   for (let x = 0; x < steps; x++) {
     for (let y = 0; y < steps; y++) {
@@ -177,9 +162,6 @@ export function addToHeatmap(
     if (y === steps - 1) {
       yStr = yStartLabel;
     }
-    console.log("item", item);
-    console.log("xStr", xStr);
-    console.log("yStr", yStr);
     const existingItem = heatmap.find(
       (existingHeatmap) =>
         existingHeatmap.x === xStr && existingHeatmap.y === yStr
@@ -198,8 +180,6 @@ export function addToHeatmap(
 // Invert y values within a dataset
 export const invertDataset = (dataset: HeatmapVisItem[]): void => {
   // Find min and max values
-  //const minX = Math.min(...dataset.map((d) => d.x));
-  //const maxX = Math.max(...dataset.map((d) => d.x));
   const minY = Math.min(...dataset.map((d) => d.y));
   const maxY = Math.max(...dataset.map((d) => d.y));
 

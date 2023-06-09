@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
-import ScatterPlot from "./components/modal/visualizations/scatterPlot";
 import { Heatmap } from "./components/modal/visualizations/heatmap";
-//import BarChart  from "./components/modal/visualizations/barchart";
 import * as interviewAnalysisHelper from "./helpers/interviewAnalysisHelper";
 
 const Modal = () => {
@@ -12,16 +10,10 @@ const Modal = () => {
 
   useEffect(() => {
     getData();
+    setHeatmaps([]);
   }, []);
 
   const handleGranularityChange = (event: any) => {
-    if (event.target.value < 2) {
-      showErrorMessageInvalidGranularity();
-      return;
-    } else if (event.target.value > 50) {
-      showErrorMessageInvalidGranularity();
-      return;
-    }
     setHeatmapSteps(event.target.value);
   };
 
@@ -38,13 +30,13 @@ const Modal = () => {
   const createHeatmap = async () => {
     const emptyHeatmap: Heatmaps[] = [];
     setHeatmaps(emptyHeatmap);
+    await sleep(100);
 
     await getData();
     await sleep(100);
-    //console.log("data", data)
 
-    await buildHeatmapData();
-    await sleep(100);
+    setHeatmaps(buildHeatmapData());
+    await sleep(1000);
     //console.log("heatmapData", heatmapData)
   };
 
@@ -66,26 +58,27 @@ const Modal = () => {
     await miro.board.notifications.showError(infoNotification);
   };
 
-  const buildHeatmapData = async () => {
+  const buildHeatmapData = ():Heatmaps[] => {
     if (data.length === 0) {
       showErrorMessage();
-      return;
+      return [];
     } else if (heatmapSteps < 2 || heatmapSteps > 100) {
       showErrorMessageInvalidGranularity();
-      return;
+      return [];
     }
-
-    //console.log('data in buildHeatmapData', data)
-    data.forEach(async (interviewData) => {
-      interviewData.questions.forEach(async (questionData) => {
-        await sleep(100);
+    
+    let createdHeatmaps: Heatmaps[] = [];
+    data.forEach((interviewData) => {
+/*       console.log(" ------ Analysis of interview started ------");
+      console.log("interviewee: ", interviewData.interviewee); */
+      interviewData.questions.forEach((questionData) => {
         //find min and max values for x and y labels for question
-        //console.log("questionData", questionData);
         let startX = questionData.xMinPosition;
         let endX = questionData.xMaxPosition;
         let startY = questionData.yMinPosition;
         let endY = questionData.yMaxPosition;
-        //swap if min is bigger than max
+
+        //swap if min is bigger than max (to invert y axis of miro frame)
         if (startX > endX) {
           const tmp = startX;
           startX = endX;
@@ -97,11 +90,6 @@ const Modal = () => {
           endY = tmp;
         }
 
-        //calculate scales
-        /*     console.log("startX", startX);
-    console.log("endX", endX);
-    console.log("startY", startY);
-    console.log("endY", endY); */
         const scaleX = interviewAnalysisHelper.calculateScale(
           startX,
           endX,
@@ -111,30 +99,33 @@ const Modal = () => {
           startY,
           endY,
           heatmapSteps
-        );
+        );/* 
 
-        //console.log("scaleX", scaleX);
-        //console.log("scaleY", scaleY);
-        //let answersAssignedToScale = interviewAnalysisHelper.assignAnswerToScale(question.answers, scaleX, scaleY);
+        console.log("questionData", questionData);
+        console.log("startX", startX);
+        console.log("endX", endX);
+        console.log("startY", startY);
+        console.log("endY", endY);
+        console.log("scaleX", scaleX);
+        console.log("scaleY", scaleY); */
 
         //check if heatmap for this question already exists
-        let heatmap = heatmaps.find(
+        let heatmap = createdHeatmaps.find(
           (heatmap) => heatmap.title === questionData.title
         );
         if (heatmap === undefined) {
           //create new heatmap
-          /*           console.log(
+/*            console.log(
             "create new heatmap because new question detected for ",
             questionData.title
-          ); */
+          );  */
           let newHeatmapData: HeatmapVisItem[] =
-            interviewAnalysisHelper.getItemsAssignedToScale(
+            interviewAnalysisHelper.assignItemsToScale(
               questionData.answers,
               scaleX,
               scaleY
             );
-          //invert heatmaps y axis
-          interviewAnalysisHelper.invertDataset(newHeatmapData);
+          //console.log("newHeatmapData", newHeatmapData);
 
           let newHeatmap: HeatmapInterface[] =
             interviewAnalysisHelper.createHeatmap(
@@ -145,24 +136,21 @@ const Modal = () => {
               questionData.yLabelMin,
               questionData.yLabelMax
             );
-          let heatmapsTmp = heatmaps;
-          heatmapsTmp.push({ data: newHeatmap, title: questionData.title });
-          setHeatmaps(heatmapsTmp);
+          createdHeatmaps.push({ data: newHeatmap, title: questionData.title });
         } else {
           //add answers to existing heatmap if the datapoint exists for this heatmap
-          /*           console.log(
+/*           console.log(
             "add answers to existing heatmap if possible to ",
             heatmap.title
           ); */
           //add answers to existing heatmap
           let newHeatmapData: HeatmapVisItem[] =
-            interviewAnalysisHelper.getItemsAssignedToScale(
+            interviewAnalysisHelper.assignItemsToScale(
               questionData.answers,
               scaleX,
               scaleY
             );
-          //invert heatmaps y axis
-          interviewAnalysisHelper.invertDataset(newHeatmapData);
+            
           interviewAnalysisHelper.addToHeatmap(
             newHeatmapData,
             heatmap.data,
@@ -175,9 +163,7 @@ const Modal = () => {
         }
       });
     });
-
-    console.log("heatmaps", heatmaps);
-    await sleep(1000);
+    return createdHeatmaps;
   };
 
   const printData = async () => {
@@ -216,12 +202,10 @@ const Modal = () => {
         button. This will define the number of steps the x and y axis is divided
         into.
       </p>
-      {/*         <div className="barchart" style={{ marginLeft: "200px" }}>
-          {barChart}
-        </div> */}
+      {/*
       <button className="button button-primary" onClick={printData}>
         Print Data
-      </button>
+      </button> */}
       <div className="modal-settings-container">
         <div className="form-group">
           <label htmlFor="axis-granularity">Axis Granularity</label>
@@ -241,7 +225,7 @@ const Modal = () => {
             className="button button-primary button-right"
             onClick={createHeatmap}
           >
-            Create Heatmap
+            Create Heatmaps
           </button>
         </div>
       </div>
@@ -250,9 +234,6 @@ const Modal = () => {
       <div className="visualizations-container">
         <div className="heatmap" style={{ marginLeft: "200px" }}>
           {getHeatmaps()}
-        </div>
-        <div className="scatterplot" style={{ marginLeft: "200px" }}>
-          {/* {scatterPlot} */}
         </div>
       </div>
     </div>
