@@ -40,6 +40,9 @@ const DescriptionModal = () => {
         <p>
           <strong>
             The most important things summed up:
+            </strong>
+            </p>
+            <strong>
             <ul>
               <li>
                 Each question is represented by a frame and belongs to exactly
@@ -55,7 +58,6 @@ const DescriptionModal = () => {
               </li>
             </ul>
           </strong>
-        </p>
         <h3>Question Plane</h3>
         <p>
           Each plane is represented by a frame. The title of the frame
@@ -71,7 +73,7 @@ const DescriptionModal = () => {
         <div className="center-content">
           <img
             className="image-description"
-            src={"./src/assets/setup-frame.png"}
+            src="./src/assets/setup-frame.png"
           />
         </div>
         <p>

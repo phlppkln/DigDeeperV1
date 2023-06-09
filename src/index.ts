@@ -5,7 +5,6 @@ async function init() {
 }
 
 export async function openModal() {
-  console.log("openModal")
   await miro.board.ui.openModal({
     url: "modal.html",
     fullscreen: true,

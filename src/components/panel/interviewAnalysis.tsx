@@ -9,7 +9,7 @@ const InterviewAnalysis :React.FC<InterviewAnalysisProps> = ({analysisComplete})
   useEffect(() => {}, []);
 
   const resetData = async () => {
-    console.log("resetData");
+    //console.log("resetData");
     //setData(initialData);
     //console.log('data', data);
     //console.log('initialData: ', initialData);
@@ -20,7 +20,6 @@ const InterviewAnalysis :React.FC<InterviewAnalysisProps> = ({analysisComplete})
   };
 
   const analyzeSelection = async () => {
-    resetData();
     const selection = await miro.board.getSelection();
 
     if (selection.length === 0) {
@@ -170,8 +169,8 @@ const InterviewAnalysis :React.FC<InterviewAnalysisProps> = ({analysisComplete})
 
   const saveAppData = async (dataTmp: InterviewData[]) => {
     await miro.board.setAppData("data", []);
-    console.log("saveAppData should be selection: ", dataTmp);
-    console.log('appData should be empty: ', await miro.board.getAppData());
+    //console.log("saveAppData should be selection: ", dataTmp);
+    //console.log('appData should be empty: ', await miro.board.getAppData());
     let dataStr = JSON.stringify(dataTmp);
     await miro.board.setAppData("data", dataStr);
     await showAnalysisCompleteNotification();

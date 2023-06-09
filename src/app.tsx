@@ -9,7 +9,7 @@ const App: React.FC = () => {
   const [customizeFrame, setCustomizeFrame] = useState(false);
   const [personIdInput, setPersonIdInput] = useState("PersonId");
   const [questionIdInput, setQuestionIdInput] = useState("QuestionId");
-  const [questionInput, setQuestionInput] = useState("What cuisines can you think of and how would you rate them?");
+  const [questionInput, setQuestionInput] = useState("What international cuisines come to your mind, and how would you rate them?");
   const [topInput, setTopInput] = useState("spicy");
   const [bottomInput, setBottomInput] = useState("mild");
   const [leftInput, setLeftInput] = useState("adventurous");
@@ -60,7 +60,7 @@ const App: React.FC = () => {
   const exportData = async () => {
     const data = await miro.board.getAppData("data");
 
-    console.log(data);
+    //console.log(data);
 
     const jsonData = JSON.stringify(data);
     const blob = new Blob([jsonData], { type: "application/json" });
@@ -271,7 +271,7 @@ const App: React.FC = () => {
 
   return (
     <div className="grid wrapper panel-container">
-      {/* <button onClick={printSelection}>Print</button> */}
+      <button onClick={printSelection}>Print</button> 
       <div className="cs1 ce12 panel-container-content">
         <div>
           <p>
