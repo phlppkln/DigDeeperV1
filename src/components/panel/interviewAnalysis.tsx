@@ -120,13 +120,19 @@ const InterviewAnalysis :React.FC<InterviewAnalysisProps> = ({analysisComplete})
       const startId = connector.start.item;
       const endId = connector.end.item;
 
-      const startItem = await miro.board.getById(startId);
-      const endItem = await miro.board.getById(endId);
+      let startItem = await miro.board.getById(startId);
+      let endItem = await miro.board.getById(endId);
       if (startItem.type === "text" && endItem.type === "text") {
         const xDistance = Math.abs(startItem.x - endItem.x);
         const yDistance = Math.abs(startItem.y - endItem.y);
         if (xDistance > yDistance) {
           //horizontal
+          //swap start and end item if start item is on the right side
+          if (startItem.x > endItem.x) {
+            const tmp = startItem;
+            startItem = endItem;
+            endItem = tmp;
+          }
           const startText = removeTags(startItem.content);
           const endText = removeTags(endItem.content);
           const startPosition = startItem.x;
@@ -137,6 +143,12 @@ const InterviewAnalysis :React.FC<InterviewAnalysisProps> = ({analysisComplete})
           question.xMaxPosition = endPosition;
         } else {
           //vertical
+          //swap start and end item if start item is on the bottom side
+          if (startItem.y < endItem.y) {
+            const tmp = startItem;
+            startItem = endItem;
+            endItem = tmp;
+          }
           const startText = removeTags(startItem.content);
           const endText = removeTags(endItem.content);
           const startPosition = startItem.y;
