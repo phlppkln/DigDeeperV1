@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { Heatmap } from "./components/modal/visualizations/heatmap";
-import * as interviewAnalysisHelper from "./helpers/interviewAnalysisHelper";
+import * as interviewAnalysisHelper from "./helper-scripts/interviewAnalysisHelper";
 
 const Modal = () => {
   const [heatmapSteps, setHeatmapSteps] = useState<number>(2);

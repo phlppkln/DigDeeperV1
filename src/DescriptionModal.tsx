@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { createRoot } from "react-dom/client";
-import template from "./assets/template.png";
+import template from "./assets/images/template.png";
 
 
 const DescriptionModal = () => {
