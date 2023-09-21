@@ -62,23 +62,15 @@ const App: React.FC = () => {
 
     //console.log(data);
 
-    const jsonData = JSON.stringify(data);
+    const jsonData = JSON.parse(JSON.stringify(data));
+    await miro.board.createStickyNote({
+      content: jsonData
+    })
+
     const blob = new Blob([jsonData], { type: "application/json" });
     saveAs(blob, "dig-deeper_interview-data.json");
   };
 
-  const printData = async () => {
-    //await getData();
-    const appData = JSON.parse(await miro.board.getAppData("data"));
-    await sleep(1000);
-    console.log("print data state in app.tsx after AppData get: ", appData);
-    console.log("print AppData in app.tsx: ", await miro.board.getAppData());
-  };
-
-  const printSelection = async () => {
-    const selection = await miro.board.getSelection();
-    console.log("printSelection App: ", selection);
-  };
 
   const analysisCompleted = async () => {
     setIsAnalysisCompleted(true);
