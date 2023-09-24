@@ -1,19 +1,12 @@
 import { Connector, StickyNote } from "@mirohq/websdk-types";
 import { useEffect } from "react";
 
-interface InterviewAnalysisProps {
+interface InputPlaneAnalysisProps {
   analysisComplete: () => void;
 };
 
-const InterviewAnalysis :React.FC<InterviewAnalysisProps> = ({analysisComplete}) => {
+const InputPlaneAnalysis :React.FC<InputPlaneAnalysisProps> = ({analysisComplete}) => {
   useEffect(() => {}, []);
-
-  const resetData = async () => {
-    //console.log("resetData");
-    //setData(initialData);
-    //console.log('data', data);
-    //console.log('initialData: ', initialData);
-  };
 
   const removeTags = (content: string) => {
     return content.replace(/(<([^>]+)>)/gi, "");
@@ -27,12 +20,12 @@ const InterviewAnalysis :React.FC<InterviewAnalysisProps> = ({analysisComplete})
       return;
     }
 
-    let dataTmp: InterviewData[] = [];
+    let dataTmp: InputPlaneData[] = [];
     try{
     selection.forEach(async (frame) => {
       if (frame.type === "frame") {
         let frameTitle = frame.title;
-        let interviewee: string;
+        let participant: string;
 
         let question: Question = {
           title: "",
@@ -49,11 +42,11 @@ const InterviewAnalysis :React.FC<InterviewAnalysisProps> = ({analysisComplete})
 
         if (frameTitle.includes(": ")) {
           var splitted = frameTitle.split(": ");
-          interviewee = splitted[0];
+          participant = splitted[0];
           question.title = splitted[1];
         } else if (frameTitle.includes(":")) {
           var splitted = frameTitle.split(":");
-          interviewee = splitted[0];
+          participant = splitted[0];
           question.title = splitted[1];
         } else {
           showErrorMessageWrongFormat();
@@ -70,31 +63,31 @@ const InterviewAnalysis :React.FC<InterviewAnalysisProps> = ({analysisComplete})
           }
         });
 
-        //check if an interview data already exists
+        //check if an input plane data already exists
         if (dataTmp.length === 0) {
           //dataTmp is empty
-          let interviewData: InterviewData = {
-            interviewee: interviewee,
+          let inputPlaneData: InputPlaneData = {
+            participant: participant,
             questions: [],
           };
-          interviewData.questions.push(question);
-          dataTmp.push(interviewData);
+          inputPlaneData.questions.push(question);
+          dataTmp.push(inputPlaneData);
         } else {
           //dataTmp is not empty
-          let intervieweeIndex = dataTmp.findIndex(
-            (x) => x.interviewee === interviewee
+          let participantIndex = dataTmp.findIndex(
+            (x) => x.participant === participant
           );
-          if (intervieweeIndex === -1) {
-            //interviewee does not exist in dataTmp
-            let interviewData: InterviewData = {
-              interviewee: interviewee,
+          if (participantIndex === -1) {
+            //participant does not exist in dataTmp
+            let inputPlaneData: InputPlaneData = {
+              participant: participant,
               questions: [],
             };
-            interviewData.questions.push(question);
-            dataTmp.push(interviewData);
+            inputPlaneData.questions.push(question);
+            dataTmp.push(inputPlaneData);
           } else {
-            //interviewee already exists
-            dataTmp[intervieweeIndex].questions.push(question);
+            //participant already exists
+            dataTmp[participantIndex].questions.push(question);
           }
         }
       }
@@ -125,6 +118,8 @@ const InterviewAnalysis :React.FC<InterviewAnalysisProps> = ({analysisComplete})
       if (startItem.type === "text" && endItem.type === "text") {
         const xDistance = Math.abs(startItem.x - endItem.x);
         const yDistance = Math.abs(startItem.y - endItem.y);
+        //check what axis we are looking at 
+        //(offset of position of start and end item on an axis is possible)
         if (xDistance > yDistance) {
           //horizontal
           //swap start and end item if start item is on the right side
@@ -179,7 +174,7 @@ const InterviewAnalysis :React.FC<InterviewAnalysisProps> = ({analysisComplete})
     return question;
   };
 
-  const saveAppData = async (dataTmp: InterviewData[]) => {
+  const saveAppData = async (dataTmp: InputPlaneData[]) => {
     await miro.board.setAppData("data", []);
     //console.log("saveAppData should be selection: ", dataTmp);
     //console.log('appData should be empty: ', await miro.board.getAppData());
@@ -234,4 +229,4 @@ const InterviewAnalysis :React.FC<InterviewAnalysisProps> = ({analysisComplete})
   );
 };
 
-export default InterviewAnalysis;
+export default InputPlaneAnalysis;

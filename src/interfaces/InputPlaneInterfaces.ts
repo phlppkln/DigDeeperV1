@@ -17,9 +17,7 @@ interface Answer {
     answers: Answer[];
   }
   
-  interface InterviewData {
-    interviewee: string;
+  interface InputPlaneData {
+    participant: string;
     questions: Question[];
   }
-
-

@@ -60,11 +60,11 @@ const DescriptionModal = () => {
               </li>
             </ul>
           </strong>
-        <h3>Question Plane</h3>
+        <h3>Input Plane</h3>
         <p>
           Each plane is represented by a frame. The title of the frame
-          identifies the participant and the question. It must include a
-          participant identifier, followed by a colon and the question
+          identifies the participant and the topic of the plane. It must include a
+          participant identifier, followed by a colon and the topic
           identifier. The title must be in the format{" "}
           <em>&lt;PersonId&gt;: &lt;QuestionId&gt;</em>
         </p>

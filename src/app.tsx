@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
-import InterviewAnalysis from "./components/panel/interviewAnalysis";
+import InputPlaneAnalysis from "./components/panel/inputPlaneAnalysis";
 import * as index from "./index";
 import { saveAs } from "file-saver";
 
@@ -309,7 +309,7 @@ const App: React.FC = () => {
             </button>
           </div>
           <div className="phase-container">
-            <InterviewAnalysis analysisComplete={analysisCompleted} />
+            <InputPlaneAnalysis analysisComplete={analysisCompleted} />
           </div>
         </div>
         <div className="phase-container">

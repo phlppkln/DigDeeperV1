@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import { Heatmap } from "./components/modal/visualizations/heatmap/heatmap";
-import * as interviewAnalysisHelper from "./helper-scripts/interviewAnalysisHelper";
+import * as inputPlaneAnalysisHelper from "./helper-scripts/inputPlaneAnalysisHelper";
 
 const Modal = () => {
   const [heatmapSteps, setHeatmapSteps] = useState<number>(2);
-  const [data, setData] = useState<InterviewData[]>([]);
+  const [data, setData] = useState<InputPlaneData[]>([]);
   const [heatmaps, setHeatmaps] = useState<Heatmaps[]>([]);
 
   useEffect(() => {
@@ -52,7 +52,7 @@ const Modal = () => {
 
   const showErrorMessage = async () => {
     // Compose the message.
-    const infoNotification = "No data found. Analyze the interview first.";
+    const infoNotification = "No data found. Analyze the input planes first.";
 
     // Display the notification on the board UI.
     await miro.board.notifications.showError(infoNotification);
@@ -68,10 +68,8 @@ const Modal = () => {
     }
     
     let createdHeatmaps: Heatmaps[] = [];
-    data.forEach((interviewData) => {
-/*       console.log(" ------ Analysis of interview started ------");
-      console.log("interviewee: ", interviewData.interviewee); */
-      interviewData.questions.forEach((questionData) => {
+    data.forEach((inputPlaneData) => {
+      inputPlaneData.questions.forEach((questionData) => {
         //find min and max values for x and y labels for question
         let startX = questionData.xMinPosition;
         let endX = questionData.xMaxPosition;
@@ -79,27 +77,29 @@ const Modal = () => {
         let endY = questionData.yMaxPosition;
 
         //swap if min is bigger than max (to invert y axis of miro frame)
-        if (startX > endX) {
+/*         if (startX > endX) {
+          console.log("swapping x")
           const tmp = startX;
           startX = endX;
           endX = tmp;
         }
         if (startY > endY) {
+          console.log("swapping y")
           const tmp = startY;
           startY = endY;
           endY = tmp;
-        }
+        } */
 
-        const scaleX = interviewAnalysisHelper.calculateScale(
+        const scaleX = inputPlaneAnalysisHelper.calculateScale(
           startX,
           endX,
           heatmapSteps
         );
-        const scaleY = interviewAnalysisHelper.calculateScale(
+        const scaleY = inputPlaneAnalysisHelper.calculateScale(
           startY,
           endY,
           heatmapSteps
-        );/* 
+        );
 
         console.log("questionData", questionData);
         console.log("startX", startX);
@@ -107,7 +107,7 @@ const Modal = () => {
         console.log("startY", startY);
         console.log("endY", endY);
         console.log("scaleX", scaleX);
-        console.log("scaleY", scaleY); */
+        console.log("scaleY", scaleY); 
 
         //check if heatmap for this question already exists
         let heatmap = createdHeatmaps.find(
@@ -120,7 +120,7 @@ const Modal = () => {
             questionData.title
           );  */
           let newHeatmapData: HeatmapVisItem[] =
-            interviewAnalysisHelper.assignItemsToScale(
+            inputPlaneAnalysisHelper.assignItemsToScale(
               questionData.answers,
               scaleX,
               scaleY
@@ -128,7 +128,7 @@ const Modal = () => {
           //console.log("newHeatmapData", newHeatmapData);
 
           let newHeatmap: HeatmapInterface[] =
-            interviewAnalysisHelper.createHeatmap(
+            inputPlaneAnalysisHelper.createHeatmap(
               newHeatmapData,
               heatmapSteps,
               questionData.xLabelMin,
@@ -145,13 +145,13 @@ const Modal = () => {
           ); */
           //add answers to existing heatmap
           let newHeatmapData: HeatmapVisItem[] =
-            interviewAnalysisHelper.assignItemsToScale(
+            inputPlaneAnalysisHelper.assignItemsToScale(
               questionData.answers,
               scaleX,
               scaleY
             );
             
-          interviewAnalysisHelper.addToHeatmap(
+          inputPlaneAnalysisHelper.addToHeatmap(
             newHeatmapData,
             heatmap.data,
             heatmapSteps,
@@ -164,10 +164,6 @@ const Modal = () => {
       });
     });
     return createdHeatmaps;
-  };
-
-  const printData = async () => {
-    console.log("printData Modal: ", data);
   };
 
   const getHeatmaps = () => {
