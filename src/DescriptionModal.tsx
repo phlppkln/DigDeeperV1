@@ -15,33 +15,18 @@ const DescriptionModal = () => {
       <div className="description-modal-content">
         <h1>DigDeeper</h1>
         <p>
-          Traditional brainstorming, problem-solving, collaborating, or
-          response-gathering techniques are often limited when truly expressing
-          ourselves. In many situations words alone do not have the power to
-          accurately describe our perspectives, thoughts, and ideas to others.
-          DigDeeper lets you harness the potential of an infinite canvas,
-          empowering individuals and teams to express themselves in new
-          explorative way. It gives participants the freedom to articulate their
-          perspectives using a two-axis plane that challenges conventional
-          thinking. This approach encourages participants to express themselves
-          by spatial positioning of notes. It helps individuals and groups find
-          and visualize ideas, opinions, and perspectives with the infinite
-          canvas.
+        DigDeeper lets you use the power of the infinite canvas to gather
+            peoples perspective through spatial positioning of sticky notes. Participants are 
+            able to express theirnp thoughts and ideas on a two-axis plane that allows them
+            to use spatial relationships of sticky notes. Furthermore, Dig Deeper allows you to 
+            visualize and analyze the spatial properties of these sticky notes to uncover key insights,
+            patterns, and trends.
         </p>
-        <p>
-          DigDeeper offers the ability to visualize and analyze spatial
-          relationships on the plane, facilitating a deeper understanding of the most important
-          areas. This creates a dynamic and immersive way to explore
-          different perspectives and helps you to identify key insights,
-          patterns, and trends. You can use DigDeeper to explore and quickly
-          pinpoint the most crucial aspects of your discussions, interviews, or
-          brainstorming sessions. Furthermore, DigDeeper enables you to export 
-          the data, to explore it in your favorite tool as well.
-        </p>
-        <h2>Layout</h2>
+        <h2>How does it work?</h2>
+        <p>We encourage you simply try it out, there is an option in the application.</p>
         <p>
           <strong>
-            The most important things summed up:
+            The most important things summed up for people who do not like instructions:
             </strong>
             </p>
             <strong>
@@ -101,6 +86,31 @@ const DescriptionModal = () => {
         <p>
           After the questioning of all participants is done, you can start the analysis of the notes. You can explore the 
           perspective of participants directly in DigDeeper or export the data as a JSON file.
+        </p>
+        <h2>Motivation</h2>
+        <p>
+          Traditional brainstorming, problem-solving, collaborating, or
+          response-gathering techniques are often limited when truly expressing
+          ourselves. In many situations words alone do not have the power to
+          accurately describe our perspectives, thoughts, and ideas to others.
+          DigDeeper lets you harness the potential of an infinite canvas,
+          empowering individuals and teams to express themselves in new
+          explorative way. It gives participants the freedom to articulate their
+          perspectives using a two-axis plane that challenges conventional
+          thinking. This approach encourages participants to express themselves
+          by spatial positioning of notes. It helps individuals and groups find
+          and visualize ideas, opinions, and perspectives with the infinite
+          canvas.
+        </p>
+        <p>
+          DigDeeper offers the ability to visualize and analyze spatial
+          relationships on the plane, facilitating a deeper understanding of the most important
+          areas. This creates a dynamic and immersive way to explore
+          different perspectives and helps you to identify key insights,
+          patterns, and trends. You can use DigDeeper to explore and quickly
+          pinpoint the most crucial aspects of your discussions, interviews, or
+          brainstorming sessions. Furthermore, DigDeeper enables you to export 
+          the data, to explore it in your favorite tool as well.
         </p>
         <button
           className="button button-primary button-right"

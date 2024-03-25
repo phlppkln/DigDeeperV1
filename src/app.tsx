@@ -266,28 +266,6 @@ const App: React.FC = () => {
       {/* <button onClick={printSelection}>Print</button>  */}
       <div className="cs1 ce12 panel-container-content">
         <div>
-          <p>
-            DigDeeper lets you use the power of the infinite canvas to gather
-            peoples perspective by spatial articulation. Break free from
-            traditional methods and explore the potential of an infinite canvas.
-            With DigDeeper, participants can express their perspectives,
-            thoughts, and ideas using a two-axis plane, resulting in an
-            interactive and engaging activity. Visualize and analyze the spatial
-            properties of participants perspective to uncover key insights,
-            patterns, and trends.
-          </p>
-          <div onClick={openDescriptionModal}>
-            {" "}
-            <div className="center-content">
-              <button
-                className="button button-secondary button-small"
-                type="button"
-              >
-                Open Description
-              </button>{" "}
-            </div>
-          </div>
-
           <div className="phase-container">
             <div>
               <label className="checkbox">
