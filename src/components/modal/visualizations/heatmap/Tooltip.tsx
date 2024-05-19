@@ -1,10 +1,16 @@
 import { InteractionData } from "./heatmap";
 import styles from "./tooltip.module.css";
 
+/* 
+* Tooltip component for the heatmap visualization
+* @param {InteractionData | null} interactionData - The data to be displayed in the tooltip
+* @param {number} width - The width of the tooltip
+* @param {number} height - The height of the tooltip
+*/
 type TooltipProps = {
   interactionData: InteractionData | null;
-  width: number;
-  height: number;
+  width: number; // width of tooltip
+  height: number; // height of tooltip
 };
 
 export const Tooltip = ({ interactionData, width, height }: TooltipProps) => {

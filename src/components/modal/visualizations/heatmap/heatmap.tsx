@@ -2,13 +2,19 @@ import { useState } from "react";
 import { Renderer } from "./Renderer";
 import { Tooltip } from "./Tooltip";
 
-
+/*
+ * Heatmap component
+ * @param {string} title - The title of the heatmap
+ * @param {number} width - The width of the heatmap
+ * @param {number} height - The height of the heatmap
+ * @param {object[]} data - The data to be displayed in the heatmap
+ */
 type HeatmapProps = {
-    title: string,
-    width: number;
-    height: number;
-    data: { x: string; y: string; value: number }[];
-  };
+  title: string;
+  width: number;
+  height: number;
+  data: { x: string; y: string; value: number }[];
+};
 
 export type InteractionData = {
   xLabel: string;
@@ -23,7 +29,7 @@ export const Heatmap = ({ title, width, height, data }: HeatmapProps) => {
 
   return (
     <div style={{ position: "relative" }}>
-        <h2>{title}</h2>
+      <h2>{title}</h2>
       <Renderer
         width={width}
         height={height}

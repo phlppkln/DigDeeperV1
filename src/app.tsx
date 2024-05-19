@@ -261,10 +261,27 @@ const App: React.FC = () => {
     setCustomizeFrame(!customizeFrame);
   };
 
+  let demoMode = false;
+  const toggleDemoMode = async () => {
+    console.log("toggle Demo mode");
+    alert("show demo panel")
+    demoMode = !(!demoMode);
+  }
+
   return (
     <div className="grid wrapper panel-container">
       {/* <button onClick={printSelection}>Print</button>  */}
       <div className="cs1 ce12 panel-container-content">
+        <div className="demo-mode-container">
+          <label className="checkbox">
+            <input
+              type="checkbox"
+              checked={demoMode}
+              onClick={toggleDemoMode}
+            />
+            <span>Demo Mode</span>
+          </label>
+        </div>
         <div>
           <div className="phase-container">
             <div>
