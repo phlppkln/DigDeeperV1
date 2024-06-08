@@ -25,9 +25,10 @@
   This generates a static output inside [`dist/`](./dist), which you can host on a static hosting
   service.
 
+<!--
 ### Folder structure
 
-<!-- The following tree structure is just an example -->
+ The following tree structure is just an example 
 
 ```
 .
@@ -39,7 +40,7 @@
 ├── app.html       // The app itself. It's loaded on the board inside the 'appContainer'
 └── index.html     // The app entry point. This is what you specify in the 'App URL' box in the Miro app settings
 ```
-
+-->
 ### About the app
 
 
