@@ -46,3 +46,9 @@ img {
   align-items: center;
   justify-content: center;
 }
+
+.side-note{
+  font-size: 12px;
+  margin-top: 20px;
+  color: #666;
+}
