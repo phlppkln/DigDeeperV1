@@ -6,7 +6,9 @@ import { saveAs } from "file-saver";
 
 const App: React.FC = () => {
   const [isAnalysisCompleted, setIsAnalysisCompleted] = useState(false);
-  const [customizeFrame, setCustomizeFrame] = useState(false);
+  const [showCreateInputPlaneContainer, setShowCreateInputPlaneContainer] = useState(true);
+  const [showAnalyzeContainer, setShowAnalyzeContainer] = useState(false);
+  const [showAnalysisContainer, setShowAnalysisContainer] = useState(false);
   const [personIdInput, setPersonIdInput] = useState("PersonId");
   const [questionIdInput, setQuestionIdInput] = useState("QuestionId");
   const [questionInput, setQuestionInput] = useState("What international cuisines come to your mind, and how would you rate them?");
@@ -76,7 +78,7 @@ const App: React.FC = () => {
     setIsAnalysisCompleted(true);
   };
 
-  const openDescriptionModal = async () => {
+  const openHelpModal = async () => {
     await index.openDescriptionModal();
   };
 
@@ -176,9 +178,9 @@ const App: React.FC = () => {
     await miro.board.viewport.zoomTo(frame);
   };
 
-  const showCustomizeFrame = () => {
+  const getShowCreateInputPlaneContainer = () => {
     let view = <div></div>;
-    if (customizeFrame) {
+    if (showCreateInputPlaneContainer) {
       view = (
         <div className="">
           <div className="form-group">
@@ -257,65 +259,44 @@ const App: React.FC = () => {
     return view;
   };
 
-  const toggleCustomizeFrame = async () => {
-    setCustomizeFrame(!customizeFrame);
-  };
-
-  let demoMode = false;
-  const toggleDemoMode = async () => {
-    console.log("toggle Demo mode");
-    alert("show demo panel")
-    demoMode = !(!demoMode);
+  const skipSetup = () => {
+    setShowCreateInputPlaneContainer(false);
+    setShowAnalyzeContainer(true);
+    setShowAnalysisContainer(false);
   }
 
-  return (
-    <div className="grid wrapper panel-container">
-      {/* <button onClick={printSelection}>Print</button>  */}
-      <div className="cs1 ce12 panel-container-content">
-        <div className="demo-mode-container">
-          <label className="checkbox">
-            <input
-              type="checkbox"
-              checked={demoMode}
-              onClick={toggleDemoMode}
-            />
-            <span>Demo Mode</span>
-          </label>
-        </div>
-        <div>
-          <div className="phase-container">
-            <div>
-              <label className="checkbox">
-                <input
-                  type="checkbox"
-                  checked={customizeFrame}
-                  onClick={toggleCustomizeFrame}
-                />
-                <span>Customize Sample Frame</span>
-              </label>
-              {showCustomizeFrame()}
-            </div>
+  const backClicked = () => {
+    if(showAnalyzeContainer) {
+      setShowCreateInputPlaneContainer(true);
+      setShowAnalyzeContainer(false);
+      setShowAnalysisContainer(false);
+    }
+    if(showAnalysisContainer) {
+      setShowCreateInputPlaneContainer(false);
+      setShowAnalyzeContainer(true);
+      setShowAnalysisContainer(false);
+    }
+  }
 
-            <button
-              className="button button-primary"
-              onClick={createSampleFrame}
-            >
-              Create Sample Frame
-            </button>
-          </div>
-          <div className="phase-container">
-            <InputPlaneAnalysis analysisComplete={analysisCompleted} />
-          </div>
-        </div>
-        <div className="phase-container">
-          <div className="">
-            <p>
+  const getShowAnalyzePlanesContainer = () => {
+    let view = <div></div>;
+    if (showAnalyzeContainer) {
+      view = <InputPlaneAnalysis analysisComplete={analysisCompleted} />;
+    } else {
+      view = <div></div>;
+    }
+    return view;
+  }
+  
+  const getShowAnalysisContainer = () => {
+    let view = <div></div>;
+    if (showAnalyzeContainer) {
+      view = (
+        <div className="">
+        <p>
               After you analyzed the frames, you can explore the perspectives directly in
               Miro or export the analyzed data.
             </p>
-          </div>
-          {/* <button onClick={printSelection}>Print selection</button> */}
-          {/* <button onClick={printData}>Print data</button> */}
           <div className="">
             <button
               disabled={!isAnalysisCompleted}
@@ -333,8 +314,54 @@ const App: React.FC = () => {
             >
               Export Data
             </button>
+            </div>
+            </div>
+            );
+    } else {
+      view = <div></div>;
+    }
+    return view;
+}
+  
+  return (
+    <div className="grid wrapper panel-container">
+      {/* <button onClick={printSelection}>Print</button>  */}
+      <div className="cs1 ce12 panel-container-content">
+          <div className="phase-container">
+            <div>
+              {getShowCreateInputPlaneContainer()}
+            </div>
+
+
+            <button
+              className="button button-primary"
+              onClick={createSampleFrame}
+            >
+              Create Sample Frame
+            </button>
+
+            <div className="skip-setup-button" onClick={skipSetup}>Skip Setup</div>
           </div>
+          { getShowAnalyzePlanesContainer() }
+          { getShowAnalysisContainer() }
+        <div className="phase-container">
+          { showInputPlaneAnalysisContainer ? (
+          <div className="">
+            
+          </div>) : <div></div>}
         </div>
+        
+        <div className="demo-mode-container">
+        <button
+              className="button button-secondary button-small"
+              onClick={openHelpModal}
+            >
+              <span className="icon icon-help-question"></span> Help
+            </button>
+        </div>
+        { showCreateInputPlaneContainer ? false : (          
+          <div onClick={backClicked}>Back</div>  
+        )}
       </div>
     </div>
   );
