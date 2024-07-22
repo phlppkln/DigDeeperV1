@@ -1,8 +1,11 @@
 import { Connector, StickyNote } from "@mirohq/websdk-types";
 import { useEffect } from "react";
 
+interface InputPlaneAnalysisProps {
+  analysisComplete: () => void;
+};
 
-const InputPlaneAnalysis :React.FC = () => {
+const InputPlaneAnalysis :React.FC<InputPlaneAnalysisProps> = ({analysisComplete}) => {
   useEffect(() => {}, []);
 
   const removeTags = (content: string) => {
@@ -178,6 +181,7 @@ const InputPlaneAnalysis :React.FC = () => {
     let dataStr = JSON.stringify(dataTmp);
     await miro.board.setAppData("data", dataStr);
     await showAnalysisCompleteNotification();
+    analysisComplete();
   };
 
   const sleep = (ms: number) => {
