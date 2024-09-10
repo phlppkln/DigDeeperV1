@@ -1,15 +1,19 @@
 import { useEffect, useState } from "react";
 
-const createInputPlanes: React.FC = () => {
-  const [personIdInput, setPersonIdInput] = useState("PersonId");
-  const [questionIdInput, setQuestionIdInput] = useState("QuestionId");
-  const [questionInput, setQuestionInput] = useState(
-    "What international cuisines come to your mind, and how would you rate them?"
-  );
-  const [topInput, setTopInput] = useState("spicy");
-  const [bottomInput, setBottomInput] = useState("mild");
-  const [leftInput, setLeftInput] = useState("adventurous");
-  const [rightInput, setRightInput] = useState("traditional");
+interface CreateInputPlanesProps {
+  loadNextView: () => void;
+}
+
+const CreateInputPlanesView: React.FC<CreateInputPlanesProps> = ({
+  loadNextView,
+}) => {
+  const [personIdInput, setPersonIdInput] = useState("");
+  const [questionIdInput, setQuestionIdInput] = useState("");
+  const [questionInput, setQuestionInput] = useState("");
+  const [topInput, setTopInput] = useState("");
+  const [bottomInput, setBottomInput] = useState("");
+  const [leftInput, setLeftInput] = useState("");
+  const [rightInput, setRightInput] = useState("");
 
   useEffect(() => {}, []);
 
@@ -40,8 +44,6 @@ const createInputPlanes: React.FC = () => {
   const handleRightInputChange = (event: any) => {
     setRightInput(event.target.value);
   };
-
-  //TODO: add sample sticky notes
 
   const createSampleFrame = async () => {
     const frameWidth = 890;
@@ -141,8 +143,34 @@ const createInputPlanes: React.FC = () => {
 
   return (
     <div className="">
+      <div className="cs1 ce12">
+        <h2>Create Input Planes</h2>
+        <p>
+          This view allows users to create input planes for gathering responses
+          from participants.
+        </p>
+        <h3>How to use</h3>
+        <ol>
+          <li>Create a question:</li>
+          <ul>
+            <li>Enter a question and a brief label for the question.</li>
+            <li>
+              Enter the values for the two answer scales (top, bottom, left, and
+              right).
+            </li>
+          </ul>
+          <li>Set the participants:</li>
+          <ul>
+            <li>
+              Enter the number of participants you want to gather responses
+              from.
+            </li>
+            <li>Enter an identifier of each participant.</li>
+          </ul>
+        </ol>
+      </div>
       <div className="form-group">
-        <label htmlFor="person-id">Person ID</label>
+        <label htmlFor="person-id">Person Id</label>
         <input
           className="input"
           type="text"
@@ -151,7 +179,7 @@ const createInputPlanes: React.FC = () => {
           onChange={handlePersonIdInputChange}
           value={personIdInput}
         />
-        <label htmlFor="question-id">Question ID</label>
+        <label htmlFor="question-id">Question Label</label>
         <input
           className="input"
           type="text"
@@ -169,8 +197,6 @@ const createInputPlanes: React.FC = () => {
           onChange={handleQuestionInputChange}
           value={questionInput}
         />
-
-        {/* Inputs for top, right, bottom, left*/}
         <label htmlFor="left">X-Axis Left</label>
         <input
           className="input"
@@ -208,11 +234,15 @@ const createInputPlanes: React.FC = () => {
           value={bottomInput}
         />
         <button className="button button-primary" onClick={createSampleFrame}>
-          Create Sample Frame
+          Create Input Plane
+        </button>
+
+        <button className="button button-tertiary" onClick={loadNextView}>
+          Skip Setup
         </button>
       </div>
     </div>
   );
 };
 
-export default createInputPlanes;
+export default CreateInputPlanesView;

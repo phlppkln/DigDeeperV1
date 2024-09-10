@@ -1,9 +1,9 @@
 import { useEffect } from "react";
 import { createRoot } from "react-dom/client";
-import template from "./assets/images/template.png";
+import template from "../assets/images/template.png";
 
 
-const DescriptionModal = () => {
+const HelpModalView = () => {
   useEffect(() => {}, []);
 
   const closeModal = async () => {
@@ -124,10 +124,10 @@ const DescriptionModal = () => {
   );
 };
 
-export default DescriptionModal;
+export default HelpModalView;
 
 const container = document.getElementById("root");
 if (container) {
   const root = createRoot(container);
-  root.render(<DescriptionModal />);
+  root.render(<HelpModalView />);
 }

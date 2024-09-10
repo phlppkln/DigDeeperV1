@@ -2,10 +2,10 @@ import { Connector, StickyNote } from "@mirohq/websdk-types";
 import { useEffect } from "react";
 
 interface AnalyzeInputPlaneProps {
-  analysisComplete: () => void;
+  loadNextView: () => void;
 };
 
-const AnalyzeInputPlanes :React.FC<AnalyzeInputPlaneProps> = ({analysisComplete}) => {
+const AnalyzeInputPlanesView :React.FC<AnalyzeInputPlaneProps> = ({loadNextView}) => {
   useEffect(() => {}, []);
 
   const removeTags = (content: string) => {
@@ -181,7 +181,7 @@ const AnalyzeInputPlanes :React.FC<AnalyzeInputPlaneProps> = ({analysisComplete}
     let dataStr = JSON.stringify(dataTmp);
     await miro.board.setAppData("data", dataStr);
     await showAnalysisCompleteNotification();
-    analysisComplete();
+    loadNextView();
   };
 
   const sleep = (ms: number) => {
@@ -229,4 +229,4 @@ const AnalyzeInputPlanes :React.FC<AnalyzeInputPlaneProps> = ({analysisComplete}
   );
 };
 
-export default AnalyzeInputPlanes;
+export default AnalyzeInputPlanesView;

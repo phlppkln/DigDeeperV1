@@ -1,28 +1,28 @@
 /**
- * starts the application
+ * starts the application by opening the panel
  */
 async function init() {
   miro.board.ui.on('icon:click', async () => {
-    await miro.board.ui.openPanel({url: 'app.html'});
+    await miro.board.ui.openPanel({url: 'panel.html'});
   });
 }
 
 /**
  * opens the visualization modal
  */
-export async function openModal() {
+export async function openVisModal() {
   await miro.board.ui.openModal({
-    url: "modal.html",
+    url: "vis-modal.html",
     fullscreen: true,
   });
 }
 
 /**
- * opens the description modal
+ * opens the help modal
  */
-export async function openDescriptionModal() {
+export async function openHelpModal() {
   await miro.board.ui.openModal({
-    url: "modal-description.html",
+    url: "help-modal.html",
     fullscreen: true,
   });
 }

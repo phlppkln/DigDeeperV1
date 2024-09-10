@@ -2,8 +2,11 @@ import { useEffect } from "react";
 import { saveAs } from "file-saver"
 import * as index from "../../index"
 
+interface VisualizeInputPlanesViewProps {
+}
 
-const visualizeInputPlanes: React.FC = () => {
+const visualizeInputPlanesView: React.FC<VisualizeInputPlanesViewProps> = ({
+}) => {
 
     useEffect(() => {}, []);
 
@@ -22,7 +25,7 @@ const visualizeInputPlanes: React.FC = () => {
       };
 
       const openModal = async () => {
-        await index.openModal();
+        await index.openVisModal();
       };
       
     return (
@@ -51,4 +54,4 @@ const visualizeInputPlanes: React.FC = () => {
             );
 };
 
-export default visualizeInputPlanes;
+export default visualizeInputPlanesView;

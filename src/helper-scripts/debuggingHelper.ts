@@ -3,7 +3,7 @@ const sleep = (ms: number) => {
     return new Promise((resolve) => setTimeout(resolve, ms));
   };
 
-export const printAppMetaData = async () => {
+export const printAppMetaDataToConsole = async () => {
     //await getData();
     const appData = JSON.parse(await miro.board.getAppData("data"));
     await sleep(1000);
@@ -11,7 +11,7 @@ export const printAppMetaData = async () => {
     console.log("print AppData in app.tsx: ", await miro.board.getAppData());
   };
 
-export const printSelection = async () => {
+export const printSelectionToConsole = async () => {
     const selection = await miro.board.getSelection();
     console.log("printSelection App: ", selection);
   };

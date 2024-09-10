@@ -111,3 +111,8 @@ a.button {
   color: #555555;
   text-decoration: underline;
 }
+
+.error-message{
+  color: red;
+  font-weight: bold;
+}

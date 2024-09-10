@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
-import { Heatmap } from "./components/modal/visualizations/heatmap/heatmap";
-import * as inputPlaneAnalysisHelper from "./helper-scripts/inputPlaneAnalysisHelper";
+import { Heatmap } from "./visualizations/heatmap/heatmap";
+import * as inputPlaneAnalysisHelper from "../helper-scripts/inputPlaneAnalysisHelper";
 
-const Modal = () => {
+const VisModalMain = () => {
   const [heatmapSteps, setHeatmapSteps] = useState<number>(2);
   const [data, setData] = useState<InputPlaneData[]>([]);
   const [heatmaps, setHeatmaps] = useState<Heatmaps[]>([]);
@@ -239,5 +239,5 @@ const Modal = () => {
 const container = document.getElementById("root");
 if (container) {
   const root = createRoot(container);
-  root.render(<Modal />);
+  root.render(<VisModalMain />);
 }
