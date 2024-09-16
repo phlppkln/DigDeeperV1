@@ -2,10 +2,12 @@ import { useEffect, useState } from "react";
 
 interface CreateInputPlanesProps {
   loadNextView: () => void;
+  showIntroduction: () => void;
 }
 
 const CreateInputPlanesView: React.FC<CreateInputPlanesProps> = ({
   loadNextView,
+  showIntroduction,
 }) => {
   const [personIdInput, setPersonIdInput] = useState("");
   const [questionIdInput, setQuestionIdInput] = useState("");
@@ -143,31 +145,38 @@ const CreateInputPlanesView: React.FC<CreateInputPlanesProps> = ({
 
   return (
     <div className="">
-      <div className="cs1 ce12">
+      <div className="">
         <h2>Create Input Planes</h2>
-        <p>
-          This view allows users to create input planes for gathering responses
-          from participants.
-        </p>
-        <h3>How to use</h3>
-        <ol>
-          <li>Create a question:</li>
-          <ul>
-            <li>Enter a question and a brief label for the question.</li>
-            <li>
-              Enter the values for the two answer scales (top, bottom, left, and
-              right).
-            </li>
-          </ul>
-          <li>Set the participants:</li>
-          <ul>
-            <li>
-              Enter the number of participants you want to gather responses
-              from.
-            </li>
-            <li>Enter an identifier of each participant.</li>
-          </ul>
-        </ol>
+        <div>
+          <button
+        className="button button-tertiary"
+        type="button"
+        onClick={showIntroduction}
+      >
+        <span className="icon icon-back-1"></span>Back
+      </button>
+        </div>
+        <details>
+          <summary>How to use</summary>
+          <ol>
+            <li>Create a question:</li>
+            <ul>
+              <li>Enter a question and a brief label for the question.</li>
+              <li>
+                Enter the values for the two answer scales (top, bottom, left,
+                and right).
+              </li>
+            </ul>
+            <li>Set the participants:</li>
+            <ul>
+              <li>
+                Enter the number of participants you want to gather responses
+                from.
+              </li>
+              <li>Enter an identifier of each participant.</li>
+            </ul>
+          </ol>
+        </details>
       </div>
       <div className="form-group">
         <label htmlFor="person-id">Person Id</label>

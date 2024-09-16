@@ -4,10 +4,12 @@ import ButtonBar from "./components/panelButtonBar";
 import CreateInputPlanesView from "./views/CreateInputPlanesView";
 import InputPlaneAnalysisView from "./views/AnalyzeInputPlanesView";
 import VisualizeInputPlanesView from "./views/VisualizeInputPlanesView";
+import introductionIcon from "../assets/images/cooperation_puzzle_icon_262690.svg";
+import * as index from "../index";
 
 const App: React.FC = () => {
-
-  const [introductionFinished, setIntroductionFinished] = useState<boolean>(false);
+  const [introductionFinished, setIntroductionFinished] =
+    useState<boolean>(false);
 
   const loadNextView = () => {
     if (currentView < views.length - 1) {
@@ -21,8 +23,15 @@ const App: React.FC = () => {
     }
   };
 
+  const openHelpModal = async () => {
+    await index.openHelpModal();
+  };
+
   const views = [
-    <CreateInputPlanesView loadNextView={loadNextView}></CreateInputPlanesView>,
+    <CreateInputPlanesView
+      loadNextView={loadNextView}
+      showIntroduction={() => setIntroductionFinished(false)}
+    ></CreateInputPlanesView>,
     <InputPlaneAnalysisView
       loadNextView={loadNextView}
     ></InputPlaneAnalysisView>,
@@ -30,51 +39,64 @@ const App: React.FC = () => {
   ];
   const [currentView, setCurrentView] = useState<number>(0);
 
-  const getIntroduction = () => {
-    let introduction = (
-      <div className="introduction-container">
-        <h1>Dig Deeper</h1>
-        <p>
-          Welcome to Dig Deeper, an app that empowers you to
-          gather people's perspective through spatial positioning of sticky
-          notes on a two-axis plane. Use DigDeeper to facilitate
-          collaborative discussions, gather thoughts and ideas, and visualize
-          relationships between answers to your questions.
-        </p>
+  const getMainView = () => {
+    if (!introductionFinished) {
+      return (
+        <div className="">
+          <h1>Dig Deeper</h1>
+          <div>
+            <img
+              src={introductionIcon}
+              alt="Introduction icon illustrating cooperation"
+            />
+          </div>
+          <p>
+            Dig Deeper is an app that empowers you to gather people's
+            perspective through spatial positioning of sticky notes. Use Dig
+            Deeper to facilitate discussions, gather thoughts and ideas, and
+            visualize answers to your questions.
+          </p>
 
-        <button
-          className="button button-primary"
-          type="button"
-          onClick={() => {
-            setIntroductionFinished(true);
-          }}
-        >
-          Start
-        </button>
-      </div>
-    )
-
-    if(introductionFinished){
-      introduction = (<div></div>)
+          <div className="center-content">
+            <div style={{ marginBottom: "16px" }}>
+              <button
+                className="button button-primary"
+                type="button"
+                onClick={() => {
+                  setIntroductionFinished(true);
+                }}
+              >
+                Start
+              </button>
+            </div>
+            <div>
+              <button
+                className="button button-secondary"
+                type="button"
+                onClick={openHelpModal}
+              >
+                <span className="icon icon-help-question"></span>Help
+              </button>
+            </div>
+          </div>
+        </div>
+      );
     }
 
-    return introduction
+    return (
+      <div className="">
+        {views[currentView]}
+        <ButtonBar
+          backViewHandler={loadPreviousView}
+          showBackButton={currentView > 0}
+        ></ButtonBar>
+      </div>
+    );
   };
 
   return (
-    <div className="grid wrapper panel-container">
-      <div className="cs1 ce12 panel-container-content">
-        <div className="introduction-container">
-          {getIntroduction()}
-        </div>
-        <div className="phase-container">
-          {views[currentView]}
-          <ButtonBar
-            backViewHandler={loadPreviousView}
-            showBackButton={currentView > 0}
-          ></ButtonBar>
-        </div>
-      </div>
+    <div className="panel-container">
+      <div className="panel-content">{getMainView()}</div>
     </div>
   );
 };
