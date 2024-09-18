@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import CreateQuestion, { Question } from "../components/CreateQuestion";
 
 interface CreateInputPlanesProps {
   loadNextView: () => void;
@@ -16,6 +17,8 @@ const CreateInputPlanesView: React.FC<CreateInputPlanesProps> = ({
   const [bottomInput, setBottomInput] = useState("");
   const [leftInput, setLeftInput] = useState("");
   const [rightInput, setRightInput] = useState("");
+
+  const [questions, setQuestions] = useState<Question[]>([]);
 
   useEffect(() => {}, []);
 
@@ -143,6 +146,21 @@ const CreateInputPlanesView: React.FC<CreateInputPlanesProps> = ({
     await miro.board.viewport.zoomTo(frame);
   };
 
+  const addEmptyQuestion = () => {
+    // create empty question
+    const newQuestion: Question = {
+      questionId: "",
+      questionText: "",
+      questionAxisLeft: "",
+      questionAxisRight: "",
+      questionAxisTop: "",
+      questionAxisBottom: "",
+    }
+
+    setQuestions([...questions, newQuestion]);
+    console.log(questions)
+  };
+
   return (
     <div className="">
       <div className="">
@@ -178,7 +196,7 @@ const CreateInputPlanesView: React.FC<CreateInputPlanesProps> = ({
           </ol>
         </details>
       </div>
-      <div className="form-group">
+{/*       <div className="form-group">
         <label htmlFor="person-id">Person Id</label>
         <input
           className="input"
@@ -249,7 +267,14 @@ const CreateInputPlanesView: React.FC<CreateInputPlanesProps> = ({
         <button className="button button-tertiary" onClick={loadNextView}>
           Skip Setup
         </button>
+      </div> */}
+
+      <div className="create-questions-container">
+        <CreateQuestion questions={questions} /> 
       </div>
+      <button className="button button-primary" type="button" aria-label="addQuestion" onClick={addEmptyQuestion}>
+		    <span className="icon icon-plus"></span>
+	    </button>
     </div>
   );
 };
