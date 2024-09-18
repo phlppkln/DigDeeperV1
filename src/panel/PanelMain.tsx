@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { createRoot } from "react-dom/client";
-import ButtonBar from "./components/panelButtonBar";
+import ButtonBar from "./components/ButtonBar";
 import CreateInputPlanesView from "./views/CreateInputPlanesView";
 import InputPlaneAnalysisView from "./views/AnalyzeInputPlanesView";
 import VisualizeInputPlanesView from "./views/VisualizeInputPlanesView";
@@ -42,9 +42,9 @@ const App: React.FC = () => {
   const getMainView = () => {
     if (!introductionFinished) {
       return (
-        <div className="">
+        <div className="panel-container">
           <h1>Dig Deeper</h1>
-          <div>
+          <div className="">
             <img
               src={introductionIcon}
               alt="Introduction icon illustrating cooperation"
