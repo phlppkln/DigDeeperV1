@@ -17,14 +17,8 @@ const App: React.FC = () => {
     }
   };
 
-  const loadPreviousView = () => {
-    if (currentView > 0) {
-      setCurrentView(currentView - 1);
-    }
-  };
-
   const openHelpModal = async () => {
-    await index.openHelpModal();
+    await index.openMoreModal();
   };
 
   const views = [
@@ -39,7 +33,11 @@ const App: React.FC = () => {
   ];
   const [currentView, setCurrentView] = useState<number>(0);
 
-  const getMainView = () => {
+  const skipToAnalysisView = () => {
+    setCurrentView(1);
+  };
+
+  const getIntroductionView = () => {
     if (!introductionFinished) {
       return (
         <div className="panel-container">
@@ -84,19 +82,22 @@ const App: React.FC = () => {
     }
 
     return (
-      <div className="">
+      <div className="" style={{ display: "flex", flexDirection: "column" as "column", alignItems: "center" }}>
+        <div>
         {views[currentView]}
+        </div>
+        <div>
         <ButtonBar
-          backViewHandler={loadPreviousView}
-          showBackButton={currentView > 0}
+          skipBtnClicked={skipToAnalysisView}
         ></ButtonBar>
+        </div>
       </div>
     );
   };
 
   return (
     <div className="panel-container">
-      <div className="panel-content">{getMainView()}</div>
+      <div className="panel-content">{getIntroductionView()}</div>
     </div>
   );
 };

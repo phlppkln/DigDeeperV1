@@ -2,14 +2,10 @@ import React from "react";
 import * as index from "../../index";
 
 interface ButtonBarProps {
-  backViewHandler: () => void;
-  showBackButton: boolean;
+  skipBtnClicked: () => void;
 }
 
-const ButtonBar: React.FC<ButtonBarProps> = ({
-  backViewHandler,
-  showBackButton,
-}) => {
+const ButtonBar: React.FC<ButtonBarProps> = ({ skipBtnClicked }) => {
   const openHelpModal = async () => {
     await index.openHelpModal();
   };
@@ -24,15 +20,13 @@ const ButtonBar: React.FC<ButtonBarProps> = ({
         <span className="icon icon-help-question"></span>Help
       </button>
 
-      {showBackButton ? (
-        <button
-          className="button button-secondary"
-          type="button"
-          onClick={backViewHandler}
-        >
-          Back
-        </button>
-      ) : null}
+      <button
+        className="button button-secondary"
+        type="button"
+        onClick={skipBtnClicked}
+      >
+        Skip to Analysis
+      </button>
     </div>
   );
 };
