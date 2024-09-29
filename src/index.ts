@@ -18,11 +18,11 @@ export async function openVisModal() {
 }
 
 /**
- * opens the help modal
+ * opens the more modal
  */
-export async function openHelpModal() {
+export async function openMoreModal() {
   await miro.board.ui.openModal({
-    url: "help-modal.html",
+    url: "more-modal.html",
     fullscreen: true,
   });
 }
