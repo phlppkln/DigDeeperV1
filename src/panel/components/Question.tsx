@@ -78,9 +78,8 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({
     flexDirection: "column" as "column",
     padding: "10px",
     marginBottom: "10px",
-    border: "1px solid black",
+    border: "0.2rem solid var(--blackAlpha80)",
     borderRadius: "5px",
-    backgroundColor: "var(--yellow100)",
   };
 
   return (
@@ -93,7 +92,7 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({
               <span
                 className="icon icon-info"
                 data-tooltip-id="my-tooltip"
-                data-tooltip-html="We use this ID to reference the question <br /> in the app. It should be unique for <br /> each question."
+                data-tooltip-html="We use this ID to reference the question <br /> in the app. It must be unique for <br /> each question."
                 data-tooltip-place="top"
               ></span>
             </div>
@@ -131,7 +130,7 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({
               <span
                 className="icon icon-info"
                 data-tooltip-id="my-tooltip"
-                data-tooltip-html="The titles for your two answer <br /> axis go here."
+                data-tooltip-html="The titles for your two answer axis<br />  go here. We recommend to keep them simple."
                 data-tooltip-place="top"
               ></span>
             </div>

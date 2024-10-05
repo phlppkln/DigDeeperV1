@@ -140,7 +140,7 @@ const CreateInputPlanesView: React.FC<CreateInputPlanesProps> = ({
             type="button"
             onClick={nextBtnClicked}
           >
-            {currentStep < steps.length - 1 ? "Next" : "Finish Setup"}
+            {currentStep < steps.length - 1 ? "Next" : "Create Input Planes"}
           </button>
         </div>
         <div className="error-message" style={errorMessage.style}>{errorMessage.message}</div>
