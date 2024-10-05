@@ -13,25 +13,21 @@ const ParticipantsContainer: React.FC<ParticipantsContainerProps> = ({
   deleteParticipant
 }) => {
 
-  
+  const updateParticipant = (newName: string) => {
+    addParticipant(newName);
+  };
+
   return (
     <div>
       {participants.map((participant) => (
-        <ParticipantComponent participantName={participant}></ParticipantComponent>
+        <ParticipantComponent participantName={participant} updateParticipant={updateParticipant} deleteParticipant={deleteParticipant(participant)}></ParticipantComponent>
       ))}
 
       <button
         className="button button-primary"
-        onClick={() => addParticipant("Participant")}
+        onClick={() => addParticipant("")}
       >
         Add Participant
-      </button>
-
-      <button
-        className="button button-primary"
-        onClick={() => deleteParticipant("Participant")}
-      >
-        Delete Participant
       </button>
     </div>
   )
