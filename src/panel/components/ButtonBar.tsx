@@ -6,8 +6,8 @@ interface ButtonBarProps {
 }
 
 const ButtonBar: React.FC<ButtonBarProps> = ({ skipBtnClicked }) => {
-  const openHelpModal = async () => {
-    await index.openHelpModal();
+  const openMoreModal = async () => {
+    await index.openMoreModal();
   };
 
   return (
@@ -15,9 +15,9 @@ const ButtonBar: React.FC<ButtonBarProps> = ({ skipBtnClicked }) => {
       <button
         className="button button-secondary"
         type="button"
-        onClick={openHelpModal}
+        onClick={openMoreModal}
       >
-        <span className="icon icon-help-question"></span>Help
+        <span className="icon icon-help-question"></span>More
       </button>
 
       <button

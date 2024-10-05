@@ -17,7 +17,7 @@ const App: React.FC = () => {
     }
   };
 
-  const openHelpModal = async () => {
+  const openMoreModal = async () => {
     await index.openMoreModal();
   };
 
@@ -71,9 +71,9 @@ const App: React.FC = () => {
               <button
                 className="button button-secondary"
                 type="button"
-                onClick={openHelpModal}
+                onClick={openMoreModal}
               >
-                <span className="icon icon-help-question"></span>Help
+                <span className="icon icon-help-question"></span>More
               </button>
             </div>
           </div>
