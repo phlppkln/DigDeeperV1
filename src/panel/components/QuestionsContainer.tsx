@@ -4,8 +4,8 @@ import QuestionComponent, { Question } from "./Question";
 interface QuestionsContainerProps {
   questions: Question[];
   addQuestion: (question: Question) => void;
-  updateQuestion: (question: Question, index: number) => void;
-  deleteQuestion: (question: Question, index: number) => void;
+  updateQuestion: (updatedQuestion: Question, indexOldQuestionToUpdate: number) => void;
+  deleteQuestion: (index: number) => void;
 }
 
 const QuestionsContainer: React.FC<QuestionsContainerProps> = ({
@@ -36,7 +36,7 @@ const QuestionsContainer: React.FC<QuestionsContainerProps> = ({
         {questions.map((question, index) => (
           <div
             key={index}>
-          <QuestionComponent question={question} updateQuestion={updateQuestion} deleteQuestion={() => deleteQuestion(question, index)}/>
+          <QuestionComponent question={question} updateQuestion={(updatedQuestion: Question) => updateQuestion(updatedQuestion, index)} deleteQuestion={() => deleteQuestion(index)}/>
 
           </div>
         ))}

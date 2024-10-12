@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import { Tooltip } from "react-tooltip";
 
 export interface Question {
@@ -18,8 +18,8 @@ interface QuestionComponentProps {
 
 const QuestionComponent: React.FC<QuestionComponentProps> = ({
   question,
-  updateQuestion,
-  deleteQuestion,
+  updateQuestion = (updatedQuestion: Question) => {},
+  deleteQuestion = () => {},
 }) => {
   useEffect(() => {}, []);
 
@@ -29,48 +29,87 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({
   const [bottomInput, setBottomInput] = useState("");
   const [leftInput, setLeftInput] = useState("");
   const [rightInput, setRightInput] = useState("");
-
-  const updateQuestionData = async () => {
-    const updatedQuestion = {
-      ...question,
+  
+  const [myQuestion, setMyQuestion]  = useState<Question>({
       questionId: questionIdInput,
       questionText: questionInput,
       questionAxisTop: topInput,
       questionAxisBottom: bottomInput,
       questionAxisLeft: leftInput,
       questionAxisRight: rightInput,
-    };
-    updateQuestion(updatedQuestion);
-  };
+    });
+
+
+  useEffect(() => {
+    updateQuestion(myQuestion);
+  }, [myQuestion]);
+    
 
   const handleQuestionIdInputChange = (event: any) => {
     setQuestionIdInput(event.target.value);
-    updateQuestionData();
+
+    question.questionId = questionIdInput;
+
+    // setMyQuestion({
+    //   ...myQuestion,
+    //   questionId: questionIdInput
+    // });
   };
 
   const handleQuestionInputChange = (event: any) => {
     setQuestionInput(event.target.value);
-    updateQuestionData();
+
+    question.questionText = questionInput;
+
+    // setMyQuestion({
+    //   ...myQuestion,
+    //   questionText: questionInput
+    // });
   };
 
   const handleTopInputChange = (event: any) => {
     setTopInput(event.target.value);
-    updateQuestionData();
+
+    question.questionAxisTop = topInput;
+
+
+    // setMyQuestion({
+    //   ...myQuestion,
+    //   questionAxisTop: topInput
+    // });
   };
 
   const handleBottomInputChange = (event: any) => {
     setBottomInput(event.target.value);
-    updateQuestionData();
+
+    question.questionAxisBottom = bottomInput;
+
+    // setMyQuestion({
+    //   ...myQuestion,
+    //   questionAxisBottom: bottomInput
+    // }); 
   };
 
   const handleLeftInputChange = (event: any) => {
     setLeftInput(event.target.value);
-    updateQuestionData();
+
+    question.questionAxisLeft = leftInput;
+
+    // setMyQuestion({
+    //   ...myQuestion,
+    //   questionAxisLeft: leftInput
+    // });
   };
 
   const handleRightInputChange = (event: any) => {
     setRightInput(event.target.value);
-    updateQuestionData();
+
+    question.questionAxisRight = rightInput;
+
+    // setMyQuestion({
+    //   ...myQuestion,
+    //   questionAxisRight: rightInput
+    // });
   };
 
   const questionContainerStyle = {
@@ -103,7 +142,7 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({
             placeholder="Question ID"
             id="question-id"
             onChange={handleQuestionIdInputChange}
-            value={question.questionId}
+            value={myQuestion.questionId}
           />
           <label htmlFor="question">
             <div style={{ display: "flex", flexDirection: "row" as "row" }}>
@@ -122,7 +161,7 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({
             placeholder="Question Text"
             id="question"
             onChange={handleQuestionInputChange}
-            value={question.questionText}
+            value={myQuestion.questionText}
           />
           <label htmlFor="axis-titles-container">
             <div style={{ display: "flex", flexDirection: "row" as "row" }}>
@@ -142,7 +181,7 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({
               placeholder="Top"
               id="top"
               onChange={handleTopInputChange}
-              value={question.questionAxisTop}
+              value={myQuestion.questionAxisTop}
             />
             <div className="axis-left-right-container">
               <input
@@ -151,7 +190,7 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({
                 placeholder="Left"
                 id="left"
                 onChange={handleLeftInputChange}
-                value={question.questionAxisLeft}
+                value={myQuestion.questionAxisLeft}
               />
               <input
                 className="input axis-title-input"
@@ -159,7 +198,7 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({
                 placeholder="Right"
                 id="right"
                 onChange={handleRightInputChange}
-                value={question.questionAxisRight}
+                value={myQuestion.questionAxisRight}
               />
             </div>
             <input
@@ -168,7 +207,7 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({
               placeholder="Bottom"
               id="bottom"
               onChange={handleBottomInputChange}
-              value={question.questionAxisBottom}
+              value={myQuestion.questionAxisBottom}
             />
           </div>
         </div>

@@ -24,23 +24,40 @@ const CreateInputPlanesView: React.FC<CreateInputPlanesProps> = ({
   };
 
 
-  const updateQuestion = (updatedQuestion: Question, index: number) => {
-    setQuestions(questions.map((q) => (q.questionId === updatedQuestion.questionId ? updatedQuestion : q)));
+  let questionsCopy = [...questions];
+
+
+  const replaceQuestionsWithCopy = () => {
+    setQuestions(questionsCopy);
   };
 
-  const deleteQuestion = (question: Question, index: number) => {
-    setQuestions(questions.filter((q) => q.questionId !== question.questionId));
+  useEffect(() => {
+    replaceQuestionsWithCopy();
+  }, [questionsCopy]);
+
+  const updateQuestion = (updatedQuestion: Question, indexOldQuestionToUpdate: number) => {
+    // console.log(updatedQuestion)
+    // setQuestions(questions.map((q, q_index) => {
+    //   if (q_index === indexOldQuestionToUpdate) {
+    //     return updatedQuestion;
+    //   }
+    //   return q;
+    // }));
+  };
+
+  const deleteQuestion = (indexToDelete: number) => {
+    //setQuestions(questions.filter((q, q_index) => q_index!== indexToDelete));
   };
 
   const addParticipant = (participant: string) => {
-    setParticipants([...participants, participant]);
+    //setParticipants([...participants, participant]);
   };
 
   const deleteParticipant = (participant: string) => {
-    setParticipants(participants.filter((p) => p !== participant));
+    //setParticipants(participants.filter((p) => p !== participant));
   };
 
-  const steps = [<QuestionsContainer questions={questions} addQuestion={addQuestion} updateQuestion={updateQuestion} deleteQuestion={deleteQuestion}></QuestionsContainer>, <ParticipantsContainer participants={participants} addParticipant={addParticipant} deleteParticipant={deleteParticipant}></ParticipantsContainer>];
+  const steps = [<QuestionsContainer questions={questionsCopy} addQuestion={addQuestion} updateQuestion={updateQuestion} deleteQuestion={() =>deleteQuestion}></QuestionsContainer>, <ParticipantsContainer participants={participants} addParticipant={addParticipant} deleteParticipant={deleteParticipant}></ParticipantsContainer>];
 
   const createInputPlanes = () => {
     // TODO: create input planes
