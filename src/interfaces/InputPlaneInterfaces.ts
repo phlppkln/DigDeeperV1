@@ -21,3 +21,13 @@ interface Answer {
     participant: string;
     questions: Question[];
   }
+
+  export interface QuestionSetup {
+    questionId: string;
+    questionText: string;
+    questionAxisLeft: string;
+    questionAxisRight: string;
+    questionAxisTop: string;
+    questionAxisBottom: string;
+  }
+  

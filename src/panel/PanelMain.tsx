@@ -6,6 +6,8 @@ import InputPlaneAnalysisView from "./views/AnalyzeInputPlanesView";
 import VisualizeInputPlanesView from "./views/VisualizeInputPlanesView";
 import introductionIcon from "../assets/images/cooperation_puzzle_icon_262690.svg";
 import * as index from "../index";
+import { Provider } from "react-redux";
+import store from '../store/store';
 
 const App: React.FC = () => {
   const [introductionFinished, setIntroductionFinished] =
@@ -105,5 +107,9 @@ const App: React.FC = () => {
 const container = document.getElementById("root");
 if (container) {
   const root = createRoot(container);
-  root.render(<App />);
+  root.render(
+    <Provider store={store}>
+  <App />
+  </Provider>
+  );
 }

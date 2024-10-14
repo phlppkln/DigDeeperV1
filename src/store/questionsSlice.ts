@@ -1,5 +1,4 @@
 import { createSlice } from '@reduxjs/toolkit'
-import Question from '../panel/components/Question';
 import { QuestionSetup } from '../interfaces/InputPlaneInterfaces';
 
 export const questionsSlice = createSlice({

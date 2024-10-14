@@ -1,17 +1,8 @@
 import React, { useEffect, useState, useCallback, useRef } from "react";
 import { Tooltip } from "react-tooltip";
 
-export interface Question {
-  questionId: string;
-  questionText: string;
-  questionAxisLeft: string;
-  questionAxisRight: string;
-  questionAxisTop: string;
-  questionAxisBottom: string;
-}
-
 interface QuestionComponentProps {
-  question: Question;
+  question: QuestionSetup;
   updateQuestion: (question: Question) => void;
   deleteQuestion: () => void;
 }

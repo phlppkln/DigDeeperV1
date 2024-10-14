@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import QuestionComponent, { Question } from "./Question";
+import QuestionComponent from "./Question";
+import { QuestionSetup } from '../../interfaces/InputPlaneInterfaces';
 
 interface QuestionsContainerProps {
-  questions: Question[];
-  addQuestion: (question: Question) => void;
-  updateQuestion: (updatedQuestion: Question, indexOldQuestionToUpdate: number) => void;
+  questions: QuestionSetup[];
+  addQuestion: (question: QuestionSetup) => void;
+  updateQuestion: (updatedQuestion: QuestionSetup, indexOldQuestionToUpdate: number) => void;
   deleteQuestion: (index: number) => void;
 }
 
@@ -17,7 +18,7 @@ const QuestionsContainer: React.FC<QuestionsContainerProps> = ({
 
   const addEmptyQuestion = () => {
     // create empty question
-    const newQuestion: Question = {
+    const newQuestion: QuestionSetup = {
       questionId: "",
       questionText: "",
       questionAxisLeft: "",
@@ -36,7 +37,7 @@ const QuestionsContainer: React.FC<QuestionsContainerProps> = ({
         {questions.map((question, index) => (
           <div
             key={index}>
-          <QuestionComponent question={question} updateQuestion={(updatedQuestion: Question) => updateQuestion(updatedQuestion, index)} deleteQuestion={() => deleteQuestion(index)}/>
+          <QuestionComponent question={question} updateQuestion={(updatedQuestion: QuestionSetup) => updateQuestion(updatedQuestion, index)} deleteQuestion={() => deleteQuestion(index)}/>
 
           </div>
         ))}

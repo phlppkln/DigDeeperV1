@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import QuestionsContainer from "../components/QuestionsContainer";
-import { Question } from "../components/Question";
 import ParticipantsContainer from "../components/ParticipantsContainer";
+import { QuestionSetup } from '../interfaces/InputPlaneInterfaces';
 
 interface CreateInputPlanesProps {
   loadNextView: () => void;
@@ -14,12 +14,12 @@ const CreateInputPlanesView: React.FC<CreateInputPlanesProps> = ({
 }) => {
 
   const [currentStep, setCurrentStep] = useState<number>(0);
-  const [questions, setQuestions] = useState<Question[]>([]);
+  const [questions, setQuestions] = useState<QuestionSetup[]>([]);
   const [participants, setParticipants] = useState<string[]>([]);
 
   const [showErrorMessage, setShowErrorMessage] = useState<boolean>(false);
 
-  const addQuestion = (question: Question) => {
+  const addQuestion = (question: QuestionSetup) => {
     setQuestions([...questions, question]);
   };
 
@@ -27,15 +27,12 @@ const CreateInputPlanesView: React.FC<CreateInputPlanesProps> = ({
   let questionsCopy = [...questions];
 
 
-  const replaceQuestionsWithCopy = () => {
+  const replaceQuestionsWithCopy = useCallback(() => {
     setQuestions(questionsCopy);
-  };
-
-  useEffect(() => {
-    replaceQuestionsWithCopy();
   }, [questionsCopy]);
 
-  const updateQuestion = (updatedQuestion: Question, indexOldQuestionToUpdate: number) => {
+
+  const updateQuestion = (updatedQuestion: QuestionSetup, indexOldQuestionToUpdate: number) => {
     // console.log(updatedQuestion)
     // setQuestions(questions.map((q, q_index) => {
     //   if (q_index === indexOldQuestionToUpdate) {
@@ -76,9 +73,13 @@ const CreateInputPlanesView: React.FC<CreateInputPlanesProps> = ({
       return;
     }
     setShowErrorMessage(false);
-    if (currentStep < steps.length - 1) {
+    if (currentStep == 0) {
+      // TODO: get questionsCopy and set 
       setCurrentStep(currentStep + 1);
-    } else {
+    } else if(currentStep === steps.length - 1) {
+
+    } 
+    else {
       console.log("Error: unknown state of setup of input planes");
     }
   };
