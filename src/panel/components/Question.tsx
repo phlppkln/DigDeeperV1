@@ -3,13 +3,13 @@ import { Tooltip } from "react-tooltip";
 
 interface QuestionComponentProps {
   question: QuestionSetup;
-  updateQuestion: (question: Question) => void;
+  updateQuestion: (question: QuestionSetup) => void;
   deleteQuestion: () => void;
 }
 
 const QuestionComponent: React.FC<QuestionComponentProps> = ({
   question,
-  updateQuestion = (updatedQuestion: Question) => {},
+  updateQuestion = (updatedQuestion: QuestionSetup) => {},
   deleteQuestion = () => {},
 }) => {
   useEffect(() => {}, []);
@@ -21,7 +21,7 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({
   const [leftInput, setLeftInput] = useState("");
   const [rightInput, setRightInput] = useState("");
   
-  const [myQuestion, setMyQuestion]  = useState<Question>({
+  const [myQuestion, setMyQuestion]  = useState<QuestionSetup>({
       questionId: questionIdInput,
       questionText: questionInput,
       questionAxisTop: topInput,
@@ -30,16 +30,14 @@ const QuestionComponent: React.FC<QuestionComponentProps> = ({
       questionAxisRight: rightInput,
     });
 
-
-  useEffect(() => {
-    updateQuestion(myQuestion);
-  }, [myQuestion]);
-    
-
   const handleQuestionIdInputChange = (event: any) => {
     setQuestionIdInput(event.target.value);
 
-    question.questionId = questionIdInput;
+
+    updateQuestion({
+      ...question,
+      questionId: questionIdInput
+    });
 
     // setMyQuestion({
     //   ...myQuestion,

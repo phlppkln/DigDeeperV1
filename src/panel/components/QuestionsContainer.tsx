@@ -1,33 +1,27 @@
 import React, { useEffect, useState } from "react";
 import QuestionComponent from "./Question";
-import { QuestionSetup } from '../../interfaces/InputPlaneInterfaces';
+import { useSelector, useDispatch } from "react-redux";
+import { questionsSetupSlice } from "../../store/questionsSetupSlice";
 
-interface QuestionsContainerProps {
-  questions: QuestionSetup[];
-  addQuestion: (question: QuestionSetup) => void;
-  updateQuestion: (updatedQuestion: QuestionSetup, indexOldQuestionToUpdate: number) => void;
-  deleteQuestion: (index: number) => void;
-}
+interface QuestionsContainerProps {}
 
-const QuestionsContainer: React.FC<QuestionsContainerProps> = ({
-  questions,
-  addQuestion,
-  updateQuestion,
-  deleteQuestion
-}) => {
+const QuestionsContainer: React.FC<QuestionsContainerProps> = ({}) => {
+  const dispatch = useDispatch();
 
-  const addEmptyQuestion = () => {
-    // create empty question
-    const newQuestion: QuestionSetup = {
-      questionId: "",
-      questionText: "",
-      questionAxisLeft: "",
-      questionAxisRight: "",
-      questionAxisTop: "",
-      questionAxisBottom: "",
-    };
+  const questions: QuestionSetup[] = useSelector(
+    (state: any) => state.questionsSetup.questionsSetup
+  );
 
-    addQuestion(newQuestion);
+  const addNewQuestion = () => {
+    dispatch(questionsSetupSlice.actions.addQuestion({}));
+  };
+
+  const deleteQuestion = (index: number) => {
+    dispatch(questionsSetupSlice.actions.deleteQuestionWithIndex(index));
+  };
+
+  const updateQuestion = (newQuestion: QuestionSetup) => {
+    dispatch(questionsSetupSlice.actions.updateQuestion(newQuestion));
   };
 
   return (
@@ -35,10 +29,12 @@ const QuestionsContainer: React.FC<QuestionsContainerProps> = ({
       <div className="create-questions-container">
         <h2>Questions</h2>
         {questions.map((question, index) => (
-          <div
-            key={index}>
-          <QuestionComponent question={question} updateQuestion={(updatedQuestion: QuestionSetup) => updateQuestion(updatedQuestion, index)} deleteQuestion={() => deleteQuestion(index)}/>
-
+          <div key={index}>
+            <QuestionComponent
+              question={question}
+              updateQuestion={updateQuestion}
+              deleteQuestion={() => deleteQuestion(index)}
+            />
           </div>
         ))}
       </div>
@@ -46,7 +42,7 @@ const QuestionsContainer: React.FC<QuestionsContainerProps> = ({
         className="button button-primary"
         type="button"
         aria-label="addQuestion"
-        onClick={addEmptyQuestion}
+        onClick={addNewQuestion}
       >
         <span className="icon icon-plus"></span> Add Question
       </button>

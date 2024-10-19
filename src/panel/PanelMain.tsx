@@ -39,7 +39,8 @@ const App: React.FC = () => {
     setCurrentView(1);
   };
 
-  const getIntroductionView = () => {
+  const getView = () => {
+    console.log(introductionFinished);
     if (!introductionFinished) {
       return (
         <div className="panel-container">
@@ -99,7 +100,7 @@ const App: React.FC = () => {
 
   return (
     <div className="panel-container">
-      <div className="panel-content">{getIntroductionView()}</div>
+      <div className="panel-content">{getView()}</div>
     </div>
   );
 };

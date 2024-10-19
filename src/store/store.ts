@@ -1,10 +1,10 @@
 // store.ts
 import { configureStore } from '@reduxjs/toolkit';
 
-import questionsSlice from './questionsSlice';
+import questionsSetupSlice from './questionsSetupSlice';
 
 export default configureStore({
   reducer: {
-    questions: questionsSlice,
+    questionsSetup: questionsSetupSlice,
   },
 });

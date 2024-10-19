@@ -22,7 +22,7 @@ interface Answer {
     questions: Question[];
   }
 
-  export interface QuestionSetup {
+  interface QuestionSetup {
     questionId: string;
     questionText: string;
     questionAxisLeft: string;

@@ -1,7 +1,9 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import QuestionsContainer from "../components/QuestionsContainer";
 import ParticipantsContainer from "../components/ParticipantsContainer";
-import { QuestionSetup } from '../interfaces/InputPlaneInterfaces';
+import { useDispatch } from "react-redux";
+import { questionsSetupSlice } from "../../store/questionsSetupSlice";
+import { useSelector } from "react-redux";
 
 interface CreateInputPlanesProps {
   loadNextView: () => void;
@@ -13,48 +15,23 @@ const CreateInputPlanesView: React.FC<CreateInputPlanesProps> = ({
   showIntroduction,
 }) => {
 
+  const dispatch = useDispatch();
+
+  const areQuestionsValid = useSelector((state: any) => state.questionsSetup.areQuestionsSetupValid);
+  const areParticipantsValid = true;
+
+  
+  const checkQuestionsCompleted = () => {
+    dispatch(questionsSetupSlice.actions.areQuestionsValid());
+  };
+
   const [currentStep, setCurrentStep] = useState<number>(0);
-  const [questions, setQuestions] = useState<QuestionSetup[]>([]);
-  const [participants, setParticipants] = useState<string[]>([]);
 
   const [showErrorMessage, setShowErrorMessage] = useState<boolean>(false);
 
-  const addQuestion = (question: QuestionSetup) => {
-    setQuestions([...questions, question]);
-  };
 
+  const steps = [<QuestionsContainer></QuestionsContainer>, <ParticipantsContainer></ParticipantsContainer>];
 
-  let questionsCopy = [...questions];
-
-
-  const replaceQuestionsWithCopy = useCallback(() => {
-    setQuestions(questionsCopy);
-  }, [questionsCopy]);
-
-
-  const updateQuestion = (updatedQuestion: QuestionSetup, indexOldQuestionToUpdate: number) => {
-    // console.log(updatedQuestion)
-    // setQuestions(questions.map((q, q_index) => {
-    //   if (q_index === indexOldQuestionToUpdate) {
-    //     return updatedQuestion;
-    //   }
-    //   return q;
-    // }));
-  };
-
-  const deleteQuestion = (indexToDelete: number) => {
-    //setQuestions(questions.filter((q, q_index) => q_index!== indexToDelete));
-  };
-
-  const addParticipant = (participant: string) => {
-    //setParticipants([...participants, participant]);
-  };
-
-  const deleteParticipant = (participant: string) => {
-    //setParticipants(participants.filter((p) => p !== participant));
-  };
-
-  const steps = [<QuestionsContainer questions={questionsCopy} addQuestion={addQuestion} updateQuestion={updateQuestion} deleteQuestion={() =>deleteQuestion}></QuestionsContainer>, <ParticipantsContainer participants={participants} addParticipant={addParticipant} deleteParticipant={deleteParticipant}></ParticipantsContainer>];
 
   const createInputPlanes = () => {
     // TODO: create input planes
@@ -64,11 +41,11 @@ const CreateInputPlanesView: React.FC<CreateInputPlanesProps> = ({
   };
 
   const nextBtnClicked = () => {
-    if(currentStep === 0 && questions.length === 0) {
+    if(currentStep === 0 && areQuestionsValid) {
       setShowErrorMessage(true);
       return;
     }
-    if(currentStep === 1 && participants.length === 0) {
+    if(currentStep === 1 && areParticipantsValid) {
       setShowErrorMessage(true);
       return;
     }
