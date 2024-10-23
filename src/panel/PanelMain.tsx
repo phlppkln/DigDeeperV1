@@ -40,7 +40,6 @@ const App: React.FC = () => {
   };
 
   const getView = () => {
-    console.log(introductionFinished);
     if (!introductionFinished) {
       return (
         <div className="panel-container">

@@ -3,9 +3,11 @@ import { useEffect } from "react";
 
 interface AnalyzeInputPlaneProps {
   loadNextView: () => void;
-};
+}
 
-const AnalyzeInputPlanesView :React.FC<AnalyzeInputPlaneProps> = ({loadNextView}) => {
+const AnalyzeInputPlanesView: React.FC<AnalyzeInputPlaneProps> = ({
+  loadNextView,
+}) => {
   useEffect(() => {}, []);
 
   const removeTags = (content: string) => {
@@ -21,64 +23,51 @@ const AnalyzeInputPlanesView :React.FC<AnalyzeInputPlaneProps> = ({loadNextView}
     }
 
     let dataTmp: InputPlaneData[] = [];
-    try{
-    selection.forEach(async (frame) => {
-      if (frame.type === "frame") {
-        let frameTitle = frame.title;
-        let participant: string;
+    try {
+      selection.forEach(async (frame) => {
+        if (frame.type === "frame") {
+          let frameTitle = frame.title;
+          let participant: string;
 
-        let question: Question = {
-          title: "",
-          answers: [],
-          xLabelMax: "",
-          xLabelMin: "",
-          yLabelMax: "",
-          yLabelMin: "",
-          xMaxPosition: 0,
-          xMinPosition: 0,
-          yMaxPosition: 0,
-          yMinPosition: 0,
-        };
-
-        if (frameTitle.includes(": ")) {
-          var splitted = frameTitle.split(": ");
-          participant = splitted[0];
-          question.title = splitted[1];
-        } else if (frameTitle.includes(":")) {
-          var splitted = frameTitle.split(":");
-          participant = splitted[0];
-          question.title = splitted[1];
-        } else {
-          showErrorMessageWrongFormat();
-          return;
-        }
-
-        const children = await frame.getChildren();
-        children.forEach(async (child) => {
-          if (child.type === "connector") {
-            question = await setAxis(child, question);
-          }
-          if (child.type === "sticky_note") {
-            question = await addAnswer(child, question);
-          }
-        });
-
-        //check if an input plane data already exists
-        if (dataTmp.length === 0) {
-          //dataTmp is empty
-          let inputPlaneData: InputPlaneData = {
-            participant: participant,
-            questions: [],
+          let question: Question = {
+            title: "",
+            answers: [],
+            xLabelMax: "",
+            xLabelMin: "",
+            yLabelMax: "",
+            yLabelMin: "",
+            xMaxPosition: 0,
+            xMinPosition: 0,
+            yMaxPosition: 0,
+            yMinPosition: 0,
           };
-          inputPlaneData.questions.push(question);
-          dataTmp.push(inputPlaneData);
-        } else {
-          //dataTmp is not empty
-          let participantIndex = dataTmp.findIndex(
-            (x) => x.participant === participant
-          );
-          if (participantIndex === -1) {
-            //participant does not exist in dataTmp
+
+          if (frameTitle.includes(": ")) {
+            var splitted = frameTitle.split(": ");
+            participant = splitted[0];
+            question.title = splitted[1];
+          } else if (frameTitle.includes(":")) {
+            var splitted = frameTitle.split(":");
+            participant = splitted[0];
+            question.title = splitted[1];
+          } else {
+            showErrorMessageWrongFormat();
+            return;
+          }
+
+          const children = await frame.getChildren();
+          children.forEach(async (child) => {
+            if (child.type === "connector") {
+              question = await setAxis(child, question);
+            }
+            if (child.type === "sticky_note") {
+              question = await addAnswer(child, question);
+            }
+          });
+
+          //check if an input plane data already exists
+          if (dataTmp.length === 0) {
+            //dataTmp is empty
             let inputPlaneData: InputPlaneData = {
               participant: participant,
               questions: [],
@@ -86,22 +75,33 @@ const AnalyzeInputPlanesView :React.FC<AnalyzeInputPlaneProps> = ({loadNextView}
             inputPlaneData.questions.push(question);
             dataTmp.push(inputPlaneData);
           } else {
-            //participant already exists
-            dataTmp[participantIndex].questions.push(question);
+            //dataTmp is not empty
+            let participantIndex = dataTmp.findIndex(
+              (x) => x.participant === participant
+            );
+            if (participantIndex === -1) {
+              //participant does not exist in dataTmp
+              let inputPlaneData: InputPlaneData = {
+                participant: participant,
+                questions: [],
+              };
+              inputPlaneData.questions.push(question);
+              dataTmp.push(inputPlaneData);
+            } else {
+              //participant already exists
+              dataTmp[participantIndex].questions.push(question);
+            }
           }
         }
-      }
-    });
-      
-  }
-  catch(error){
-    console.log(error);
-    showErrorMessageWrongFormat();
-    return;
-  }
+      });
+    } catch (error) {
+      console.log(error);
+      showErrorMessageWrongFormat();
+      return;
+    }
     //console.log("dataTmp", dataTmp);
     await sleep(1000);
-    if(dataTmp.length === 0){
+    if (dataTmp.length === 0) {
       showErrorMessageWrongFormat();
       return;
     }
@@ -118,7 +118,7 @@ const AnalyzeInputPlanesView :React.FC<AnalyzeInputPlaneProps> = ({loadNextView}
       if (startItem.type === "text" && endItem.type === "text") {
         const xDistance = Math.abs(startItem.x - endItem.x);
         const yDistance = Math.abs(startItem.y - endItem.y);
-        //check what axis we are looking at 
+        //check what axis we are looking at
         //(offset of position of start and end item on an axis is possible)
         if (xDistance > yDistance) {
           //horizontal
@@ -215,16 +215,17 @@ const AnalyzeInputPlanesView :React.FC<AnalyzeInputPlaneProps> = ({loadNextView}
 
   return (
     <div className="">
-          <p>
-            First, select all frames that contain the two-axis plane and the notes with the participants responses.
-          </p>{" "}
-          <div className="center-content">
+      <p>
+        First, select all frames that contain the two-axis plane and the notes
+        with the participants responses.
+      </p>{" "}
+      <div className="center-content">
         <div className="cs1 ce12">
           <button className="button button-primary" onClick={analyzeSelection}>
             Analyze Frames
           </button>
-          </div>
-          </div>
+        </div>
+      </div>
     </div>
   );
 };
